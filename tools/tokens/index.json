@@ -1,0 +1,11 @@
+{
+  "color": {
+    "primary": "#0070f3",
+    "on-primary": "#ffffff"
+  },
+  "dimen": {
+    "btn-radius": "4px",
+    "btn-md-px": "16px",
+    "btn-md-py": "12px"
+  }
+}

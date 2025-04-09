@@ -1,0 +1,7 @@
+:root {
+  --color-primary: #0070f3;
+  --color-on-primary: #ffffff;
+  --dimen-btn-radius: 4px;
+  --dimen-btn-md-px: 16px;
+  --dimen-btn-md-py: 12px;
+}
