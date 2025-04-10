@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useRef } from "react";
 import { AdminFormCompareStore } from "./controller";
 import { useAdminFormLayoutStore } from "../storeContext";
+import { CompareFormItem } from "@/domain/models/admin/forms/compare/CompareFormItem";
 
 
 

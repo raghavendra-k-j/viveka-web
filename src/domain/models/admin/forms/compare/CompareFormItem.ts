@@ -1,6 +1,7 @@
 import { JSONParams } from "@/core/types/JSONParams";
 import { FormType } from "@/domain/models/commons/forms/FormType";
 
+
 type CompareFormItemParams = {
     id: number;
     type: FormType;

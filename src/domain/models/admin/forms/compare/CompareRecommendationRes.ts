@@ -9,7 +9,7 @@ export class CompareRecommendationRes {
     }
 
     static fromJson(json: JSONParams): CompareRecommendationRes {
-        const forms = (json.recommendedForms || []).map((item: any) => CompareFormItem.fromJson(item));
+        const forms = (json.recommendedForms || []).map((item: JSONParams) => CompareFormItem.fromJson(item));
         return new CompareRecommendationRes({ recommendedForms: forms });
     }
 }

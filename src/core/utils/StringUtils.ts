@@ -1,4 +1,5 @@
 export class StringUtils {
+
     /**
      * Trims the input string and returns null if the result is an empty string.
      * @param value The string to trim.
@@ -11,4 +12,23 @@ export class StringUtils {
         const trimmed = value.trim();
         return trimmed === '' ? null : trimmed;
     }
+
+    static trimToUndefined(value: string | null | undefined): string | undefined {
+        if (value == null) {
+            return undefined;
+        }
+        const trimmed = value.trim();
+        return trimmed === '' ? undefined : trimmed;
+    }
+    
+
+
+    static trimToEmpty(value: string): string {
+        if (value == null) {
+            return '';
+        }
+        const trimmed = value.trim();
+        return trimmed === '' ? '' : trimmed;
+    }
+
 }
