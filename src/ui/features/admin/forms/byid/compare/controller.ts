@@ -115,7 +115,7 @@ export class AdminFormCompareStore {
 
     async loadOverview(vm: CompareVm) {
         runInAction(() => vm.overViewState = DataState.loading());
-        const req = new FormComparisonOverviewReq({ formAId: this.formDetail.id, formBId: vm.selectedForm!.id, formALabel: "Form A", formBLabel: "Form B" });
+        const req = new FormComparisonOverviewReq({ formAId: this.formDetail.id, formBId: vm.selectedForm!.id, formALabel: "Pre-Training", formBLabel: "Post-Traning" });
         try {
             const res = (await this.parentStore.adminFormsService.getComparisonOverview(req)).getOrThrow();
             runInAction(() => vm.overViewState = DataState.success(res));
@@ -139,7 +139,7 @@ export class AdminFormCompareStore {
 
     async getUsersComparison({ vm, page }: { vm: CompareVm, page?: number }) {
         runInAction(() => vm.usersState = DataState.loading());
-        const req = new UserAssessmentCompareReq({ formAId: this.formDetail.id, formBId: vm.selectedForm!.id, formALabel: "Form A", formBLabel: "Form B", page: page ?? 1, pageSize: 1, searchQuery: vm.searchQuery });
+        const req = new UserAssessmentCompareReq({ formAId: this.formDetail.id, formBId: vm.selectedForm!.id, formALabel: "Pre-Traning", formBLabel: "Post-Training", page: page ?? 1, pageSize: 10, searchQuery: vm.searchQuery });
         try {
             const res = (await this.parentStore.adminFormsService.getIndividualUsersComparison(req)).getOrThrow();
             runInAction(() => vm.usersState = DataState.success(res));

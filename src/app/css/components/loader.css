@@ -1,0 +1,31 @@
+.loader {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  border-radius: 50%;
+  border-style: solid;
+
+  width: var(--loader-size, var(--dimen-loader-size));
+  height: var(--loader-size, var(--dimen-loader-size));
+  border-width: var(--loader-thickness, var(--dimen-loader-thickness));
+
+  border-top-color: transparent;
+  border-right-color: var(--loader-color, var(--color-loader-default));
+  border-bottom-color: var(--loader-color, var(--color-loader-default));
+  border-left-color: var(--loader-color, var(--color-loader-default));
+}
+
+.loader--primary {
+  --loader-color: var(--color-primary);
+}
+
+.loader--neutral {
+  --loader-color: var(--color-content-secondary);
+}
+
+.loader--success {
+  --loader-color: var(--color-success);
+}
+
+.loader--danger {
+  --loader-color: var(--color-danger);
+}

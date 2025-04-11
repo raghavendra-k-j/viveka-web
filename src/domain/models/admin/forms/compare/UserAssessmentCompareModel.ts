@@ -35,6 +35,8 @@ export class UserAssessmentCompareReq {
         return {
             formAId: this.formAId,
             formBId: this.formBId,
+            formALabel: this.formALabel,
+            formBLabel: this.formBLabel,
             searchQuery: this.searchQuery,
             page: this.page,
             pageSize: this.pageSize

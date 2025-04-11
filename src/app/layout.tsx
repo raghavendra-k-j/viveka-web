@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./globals.css";
+import "./css/globals.css";
 import { appConfig } from "@/core/config/appConfig";
 
 const appSans = Poppins({

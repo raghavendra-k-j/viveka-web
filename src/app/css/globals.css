@@ -1,0 +1,83 @@
+@import "tailwindcss";
+@import "./theme.css";
+@import "./components/loader.css";
+@import "./components/buttons.css";
+
+:root {
+  --color-background: #f2f4f7;
+}
+
+body {
+  background: var(--color-background);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =====================
+   Font Sizes - Semantic
+   ===================== */
+
+/* Small scale */
+.fs-sm-m { font-size: 10px; }
+.fs-sm { font-size: 11px; }
+.fs-sm-p { font-size: 12px; }
+
+/* Medium scale */
+.fs-md-m { font-size: 13px; }
+.fs-md { font-size: 14px; }
+.fs-md-p { font-size: 15px; }
+
+/* Large scale */
+.fs-lg-m { font-size: 16px; }
+.fs-lg { font-size: 17px; }
+.fs-lg-p { font-size: 18px; }
+
+/* Extra Large scale */
+.fs-xl-m { font-size: 19px; }
+.fs-xl { font-size: 20px; }
+.fs-xl-p { font-size: 21px; }
+
+/* 2XL scale */
+.fs-2xl-m { font-size: 22px; }
+.fs-2xl { font-size: 23px; }
+.fs-2xl-p { font-size: 24px; }
+
+
+/* =====================
+   Font Weights - Semantic
+   ===================== */
+
+.fw-thin        { font-weight: 100; }
+.fw-extralight  { font-weight: 200; }
+.fw-light       { font-weight: 300; }
+.fw-regular     { font-weight: 400; }
+.fw-medium      { font-weight: 500; }
+.fw-semibold    { font-weight: 600; }
+.fw-bold        { font-weight: 700; }
+.fw-extrabold   { font-weight: 800; }
+.fw-black       { font-weight: 900; }
+
+
+.text-content-primary {
+  color: var(--color-content-primary);
+}
+.text-content-secondary {
+  color: var(--color-content-secondary);
+}
+.text-content-tertiary {
+  color: var(--color-content-tertiary);
+}
+.text-content-placeholder {
+  color: var(--color-content-placeholder);
+}
+.text-content-hint {
+  color: var(--color-content-hint);
+}
+.text-content-disabled {
+  color: var(--color-content-disabled);
+}

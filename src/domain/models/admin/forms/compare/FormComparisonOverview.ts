@@ -1,4 +1,5 @@
 import { JSONParams } from "@/core/types/JSONParams";
+import { NumberCompareUtil } from "@/domain/utils/NumberCompareUtil";
 
 
 type FormComparisonOverviewReqProps = {
@@ -56,17 +57,22 @@ export class FormComparisonOverviewRes {
 
     formAAvgMarks: number;
     formBAvgMarks: number;
+    avgMarksDiff: number;
+    avgMarksPercentageChange: number;
 
     formAAvgTime: number;
     formBAvgTime: number;
+    avgTimeDiff: number;
+    avgTimePercentageChange: number;
 
-    formAPassRate: number;
-    formBPassRate: number;
+    formAPassRate: number | null;
+    formBPassRate: number | null;
+    passRateDiff: number | null;
+    passRatePercentageChange: number | null;
 
     formATotalResponses: number;
     formBTotalResponses: number;
     commonResponseCount: number;
-
 
     constructor(props: FormComparisonOverviewResProps) {
         this.formALabel = props.formALabel;
@@ -74,12 +80,21 @@ export class FormComparisonOverviewRes {
 
         this.formAAvgMarks = props.formAAvgMarks;
         this.formBAvgMarks = props.formBAvgMarks;
+        const avgMarkCompareResult = NumberCompareUtil.compare(this.formAAvgMarks, this.formBAvgMarks);
+        this.avgMarksDiff = avgMarkCompareResult.difference;
+        this.avgMarksPercentageChange = avgMarkCompareResult.percentageChange ?? 0;
 
         this.formAAvgTime = props.formAAvgTime;
         this.formBAvgTime = props.formBAvgTime;
+        const avgTimeCompareResult = NumberCompareUtil.compare(this.formAAvgTime, this.formBAvgTime);
+        this.avgTimeDiff = avgTimeCompareResult.difference;
+        this.avgTimePercentageChange = avgTimeCompareResult.percentageChange ?? 0;
 
         this.formAPassRate = props.formAPassRate;
         this.formBPassRate = props.formBPassRate;
+        const passRateCompareResult = NumberCompareUtil.compare(this.formAPassRate, this.formBPassRate);
+        this.passRateDiff = passRateCompareResult.difference;
+        this.passRatePercentageChange = passRateCompareResult.percentageChange ?? 0;
 
         this.formATotalResponses = props.formATotalResponses;
         this.formBTotalResponses = props.formBTotalResponses;
@@ -103,3 +118,6 @@ export class FormComparisonOverviewRes {
     }
 
 }
+
+
+

@@ -1,7 +1,7 @@
 import { useAdminFormLayoutStore } from "./storeContext";
 import { observer } from "mobx-react-lite";
 import AppErrorView from "@/ui/widgets/error/AppErrorView";
-import Loader from "@/ui/widgets/loaders/Loader";
+import {Loader} from "@/ui/widgets/loaders/Loader";
 
 
 export type AdminFormLayoutParams = {

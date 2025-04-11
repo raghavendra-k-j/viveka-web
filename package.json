@@ -27,7 +27,8 @@
     "mobx-lite": "^0.1.7",
     "next": "15.2.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

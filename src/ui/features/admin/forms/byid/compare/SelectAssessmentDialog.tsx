@@ -1,22 +1,23 @@
-import { DialogCard, DialogFooter, DialogHeader } from "@/ui/widgets/dialogs/DialogCard";
+import { useState, useRef, useContext, createContext } from "react";
+import { observer } from "mobx-react-lite";
 import { makeAutoObservable, observable, reaction, runInAction } from "mobx";
-import { createContext, useContext, useRef, useEffect } from "react";
+import debounce from "lodash/debounce";
+
 import { useAdminFormCompareStore } from "./storeContext";
 import { AdminFormCompareStore } from "./controller";
 import { DataState } from "@/ui/utils/datastate";
 import { QueryFormsToCompareReq, QueryFormsToCompareRes } from "@/domain/models/admin/forms/compare/QueryFormsToCompareModel";
-import { AppException } from "@/core/exceptions/AppException";
-import AppErrorView from "@/ui/widgets/error/AppErrorView";
-import Loader from "@/ui/widgets/loaders/Loader";
-import { observer } from "mobx-react-lite";
-import debounce from "lodash/debounce";
-import { StringUtils } from "@/core/utils/StringUtils";
 import { CompareFormItem } from "@/domain/models/admin/forms/compare/CompareFormItem";
+import { AppException } from "@/core/exceptions/AppException";
+import { StringUtils } from "@/core/utils/StringUtils";
+
+import { DialogCard, DialogFooter, DialogHeader } from "@/ui/widgets/dialogs/DialogCard";
+import AppErrorView from "@/ui/widgets/error/AppErrorView";
+import { Loader } from "@/ui/widgets/loaders/Loader";
 
 // ---------------- Store ----------------
 
 class SelectAssessmentDialogController {
-
     parentStore: AdminFormCompareStore;
     loadState = DataState.initial<QueryFormsToCompareRes>();
     searchQuery: string = "";
@@ -40,22 +41,27 @@ class SelectAssessmentDialogController {
             loadState: observable,
             searchQuery: observable,
         });
+
         this.debouncedLoadData = debounce(() => this.loadData(), 300);
-        reaction(() => this.searchQuery, this.debouncedLoadData)
+        reaction(() => this.searchQuery, this.debouncedLoadData);
+
         this.loadData();
     }
 
     onSearchQueryChange(value: string): void {
-        runInAction(() => this.searchQuery = StringUtils.trimToEmpty(this.searchQuery));
+        runInAction(() => {
+            this.searchQuery = StringUtils.trimToEmpty(value);
+        });
     }
 
     async loadData() {
         this.loadState = DataState.loading();
+
         const req = new QueryFormsToCompareReq({
             searchQuery: StringUtils.trimToUndefined(this.searchQuery),
             formId: this.formDetail.id,
             page: 1,
-            pageSize: 10
+            pageSize: 10,
         });
 
         try {
@@ -68,65 +74,64 @@ class SelectAssessmentDialogController {
     }
 }
 
-const SelectAssessmentDialogStore = createContext<SelectAssessmentDialogController | null>(null);
+const DialogStoreContext = createContext<SelectAssessmentDialogController | null>(null);
 
-export function SelectAssessmentDialogStoreProvider({ children }: { children: React.ReactNode }) {
+function DialogStoreProvider({ children }: { children: React.ReactNode }) {
     const store = useRef<SelectAssessmentDialogController | null>(null);
     const parentStore = useAdminFormCompareStore();
 
     if (!store.current) {
-        store.current = new SelectAssessmentDialogController({ parentStore: parentStore });
+        store.current = new SelectAssessmentDialogController({ parentStore });
     }
 
     return (
-        <SelectAssessmentDialogStore.Provider value={store.current}>
+        <DialogStoreContext.Provider value={store.current}>
             {children}
-        </SelectAssessmentDialogStore.Provider>
+        </DialogStoreContext.Provider>
     );
 }
 
-export function useSelectAssessmentDialogStore() {
-    const store = useContext(SelectAssessmentDialogStore);
-    if (!store) {
-        throw new Error("SelectAssessmentDialogStore must be used within a SelectAssessmentDialogStoreProvider");
-    }
+function useDialogStore() {
+    const store = useContext(DialogStoreContext);
+    if (!store) throw new Error("Must be used within DialogStoreProvider");
     return store;
 }
 
-// ---------------- UI Component ----------------
+// ---------------- Main Dialog Component ----------------
 
-export default function SelectAssessmentDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export default function SelectAssessmentDialog({
+    isOpen,
+    onClose,
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+}) {
     return (
-        <SelectAssessmentDialogStoreProvider>
+        <DialogStoreProvider>
             <DialogCard isOpen={isOpen} onClose={onClose}>
-                <div className="flex flex-col h-full max-h-[90vh]">
+                <div className="dialog-container">
                     <DialogHeader onClose={onClose}>Select Assessment</DialogHeader>
-
                     <SearchBar />
-
-                    <div className="flex-1 overflow-y-auto">
-                        <ListOfAssessments />
-                    </div>
-
+                    <AssessmentList />
                     <DialogFooter>
                         <button className="btn-primary" onClick={onClose}>Done</button>
                     </DialogFooter>
                 </div>
             </DialogCard>
-        </SelectAssessmentDialogStoreProvider>
+        </DialogStoreProvider>
     );
 }
 
 // ---------------- Search Bar ----------------
 
 function SearchBar() {
-    const store = useSelectAssessmentDialogStore();
+    const store = useDialogStore();
     return (
-        <div className="p-4">
+        <div className="dialog-search">
             <input
                 type="text"
                 placeholder="Search for an assessment..."
-                className="w-full p-2 border rounded"
+                className="input"
                 onChange={(e) => store.onSearchQueryChange(e.target.value)}
             />
         </div>
@@ -134,18 +139,13 @@ function SearchBar() {
 }
 
 // ---------------- List View ----------------
-const ListOfAssessments = observer(() => {
-    const { loadState, data, parentStore } = useSelectAssessmentDialogStore();
+
+const AssessmentList = observer(() => {
+    const { loadState, data, parentStore } = useDialogStore();
 
     if (loadState.isError) {
         const error = loadState.error!;
-        return (
-            <AppErrorView
-                message={error.message}
-                description={error.description}
-                actions={[]}
-            />
-        );
+        return <AppErrorView message={error.message} description={error.description} actions={[]} />;
     }
 
     if (loadState.isLoading) {
@@ -154,7 +154,7 @@ const ListOfAssessments = observer(() => {
 
     if (loadState.isSuccess) {
         return (
-            <div className="p-4 space-y-2">
+            <div className="assessment-list">
                 {data.items.map((item) => (
                     <AssessmentItem
                         key={item.id}
@@ -169,24 +169,20 @@ const ListOfAssessments = observer(() => {
     return null;
 });
 
+// ---------------- Item Card ----------------
 
 type AssessmentItemProps = {
     form: CompareFormItem;
     onClick: (form: CompareFormItem) => void;
 };
 
-
-// ---------------- Assessment Item ----------------
-const AssessmentItem: React.FC<AssessmentItemProps> = ({ form, onClick }) => {
+function AssessmentItem({ form, onClick }: AssessmentItemProps) {
     return (
-        <div
-            onClick={() => onClick(form)}
-            className="p-4 border rounded shadow hover:shadow-md transition cursor-pointer"
-        >
-            <p className="font-semibold text-lg">{form.title}</p>
-            <p className="text-sm text-gray-600">
+        <div className="assessment-item" onClick={() => onClick(form)}>
+            <p className="assessment-title">{form.title}</p>
+            <p className="assessment-meta">
                 {form.totalResponses} responses • {form.totalQuestions} questions • {form.totalMarks} marks
             </p>
         </div>
     );
-};
+}
