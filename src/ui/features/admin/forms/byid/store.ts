@@ -6,10 +6,9 @@ import AdminApiClient from "@/data/sources/AdminApiClient";
 import { AdminFormDetail } from "@/domain/models/admin/forms/AdminFormDetail";
 import AdminFormService from "@/domain/services/admin/AdminFormsService";
 import { DataState } from "@/ui/utils/datastate";
-import { action, makeAutoObservable, observable, observe, runInAction } from "mobx";
+import { makeAutoObservable, observable, runInAction } from "mobx";
 
-
-export class AdminFormLayoutStore {
+export class AdminFormStore {
 
     permalink: string;
     adminFormsService: AdminFormService = new AdminFormService({ adminFormsRepo: new AdminFormsRepo({ adminApiClient: AdminApiClient.getInstance() }) });
@@ -20,7 +19,6 @@ export class AdminFormLayoutStore {
         makeAutoObservable(this, {
             formState: observable,
         });
-        this.loadFormDetail({ permalink });
     }
 
     get formDetail(): AdminFormDetail {
@@ -28,10 +26,10 @@ export class AdminFormLayoutStore {
     }
 
 
-    async loadFormDetail({ permalink }: { permalink: string }) {
+    async loadFormDetail() {
         try {
             runInAction(() => this.formState = DataState.loading());
-            let response = (await this.adminFormsService.getAdminFormDetailByPermalink(permalink)).getOrThrow();
+            let response = (await this.adminFormsService.getAdminFormDetailByPermalink(this.permalink)).getOrThrow();
             runInAction(() => this.formState = DataState.success(response));
         }
         catch (error) {

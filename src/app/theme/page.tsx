@@ -4,6 +4,7 @@ import OutlinedButtonsDemo from "./OutlinedButtonsDemo";
 import {LoaderDemo} from "./LoaderDemo";
 import SearchInputDemo from "./SearchInputDemo";
 import FilledButtonsDemo from "./FilledButtonsDemo";
+import { DialogDemo } from "./DialogDemo";
 
 
 export default function ThemePage() {
@@ -14,6 +15,8 @@ export default function ThemePage() {
            <FilledButtonsDemo/>
            <hr/>
            <OutlinedButtonsDemo/>
+           <hr/>
+           <DialogDemo/>
         </main>
     );
 }

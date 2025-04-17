@@ -1,119 +1,42 @@
 import { JSONParams } from "@/core/types/JSONParams";
-import { NumberCompareUtil } from "@/domain/utils/NumberCompareUtil";
+import { NumChangeMetric } from "@/domain/utils/NumberChangeMetric";
 
 
-type FormComparisonOverviewReqProps = {
-    formAId: number;
-    formBId: number;
-    formALabel: string;
-    formBLabel: string;
-}
-
-export class FormComparisonOverviewReq {
-    formAId: number;
-    formBId: number;
-    formALabel: string;
-    formBLabel: string;
-
-    constructor(props: FormComparisonOverviewReqProps) {
-        this.formAId = props.formAId;
-        this.formBId = props.formBId;
-        this.formALabel = props.formALabel;
-        this.formBLabel = props.formBLabel;
-    }
-
-    toJson(): JSONParams {
-        return {
-            formAId: this.formAId,
-            formBId: this.formBId,
-            formALabel: this.formALabel,
-            formBLabel: this.formBLabel
-        }
-    }
+export type FormItemsProps = {
+    label: string;
+    avgMarks: number;
+    avgPercent: number;
+    avgTime: number;
+    passRate: number | null;
+    passCount: number | null;
 }
 
 
-type FormComparisonOverviewResProps = {
-    formALabel: string;
-    formBLabel: string;
+export class FormItem {
+    label: string;
+    avgMarks: number;
+    avgPercent: number;
+    avgTime: number;
+    passRate: number | null;
+    passCount: number | null;
 
-    formAAvgMarks: number;
-    formBAvgMarks: number;
-
-    formAAvgTime: number;
-    formBAvgTime: number;
-
-    formAPassRate: number;
-    formBPassRate: number;
-
-    formATotalResponses: number;
-    formBTotalResponses: number;
-    commonResponseCount: number;
-}
-
-export class FormComparisonOverviewRes {
-    formALabel: string;
-    formBLabel: string;
-
-    formAAvgMarks: number;
-    formBAvgMarks: number;
-    avgMarksDiff: number;
-    avgMarksPercentageChange: number;
-
-    formAAvgTime: number;
-    formBAvgTime: number;
-    avgTimeDiff: number;
-    avgTimePercentageChange: number;
-
-    formAPassRate: number | null;
-    formBPassRate: number | null;
-    passRateDiff: number | null;
-    passRatePercentageChange: number | null;
-
-    formATotalResponses: number;
-    formBTotalResponses: number;
-    commonResponseCount: number;
-
-    constructor(props: FormComparisonOverviewResProps) {
-        this.formALabel = props.formALabel;
-        this.formBLabel = props.formBLabel;
-
-        this.formAAvgMarks = props.formAAvgMarks;
-        this.formBAvgMarks = props.formBAvgMarks;
-        const avgMarkCompareResult = NumberCompareUtil.compare(this.formAAvgMarks, this.formBAvgMarks);
-        this.avgMarksDiff = avgMarkCompareResult.difference;
-        this.avgMarksPercentageChange = avgMarkCompareResult.percentageChange ?? 0;
-
-        this.formAAvgTime = props.formAAvgTime;
-        this.formBAvgTime = props.formBAvgTime;
-        const avgTimeCompareResult = NumberCompareUtil.compare(this.formAAvgTime, this.formBAvgTime);
-        this.avgTimeDiff = avgTimeCompareResult.difference;
-        this.avgTimePercentageChange = avgTimeCompareResult.percentageChange ?? 0;
-
-        this.formAPassRate = props.formAPassRate;
-        this.formBPassRate = props.formBPassRate;
-        const passRateCompareResult = NumberCompareUtil.compare(this.formAPassRate, this.formBPassRate);
-        this.passRateDiff = passRateCompareResult.difference;
-        this.passRatePercentageChange = passRateCompareResult.percentageChange ?? 0;
-
-        this.formATotalResponses = props.formATotalResponses;
-        this.formBTotalResponses = props.formBTotalResponses;
-        this.commonResponseCount = props.commonResponseCount;
+    constructor(props: FormItemsProps) {
+        this.label = props.label;
+        this.avgMarks = props.avgMarks;
+        this.avgPercent = props.avgPercent;
+        this.avgTime = props.avgTime;
+        this.passRate = props.passRate;
+        this.passCount = props.passCount;
     }
 
-    static fromJson(json: JSONParams): FormComparisonOverviewRes {
-        return new FormComparisonOverviewRes({
-            formALabel: json.formALabel,
-            formBLabel: json.formBLabel,
-            formAAvgMarks: json.formAAvgMarks,
-            formBAvgMarks: json.formBAvgMarks,
-            formAAvgTime: json.formAAvgTime,
-            formBAvgTime: json.formBAvgTime,
-            formAPassRate: json.formAPassRate,
-            formBPassRate: json.formBPassRate,
-            formATotalResponses: json.formATotalResponses,
-            formBTotalResponses: json.formBTotalResponses,
-            commonResponseCount: json.commonResponseCount
+    static fromJson(json: JSONParams): FormItem {
+        return new FormItem({
+            label: json.label,
+            avgMarks: json.avgMarks,
+            avgPercent: json.avgPercent,
+            avgTime: json.avgTime,
+            passRate: json.passRate,
+            passCount: json.passCount
         });
     }
 
@@ -121,3 +44,45 @@ export class FormComparisonOverviewRes {
 
 
 
+export type FormComparisonOverviewProps = {
+    formA: FormItem;
+    formB: FormItem;
+}
+
+export class FormComparisonOverview {
+    formA: FormItem;
+    formB: FormItem;
+
+    avgMarksChange: NumChangeMetric;
+    avgPercentChange: NumChangeMetric;
+    avgTimeChange: NumChangeMetric;
+
+    passRateChange: NumChangeMetric | null;
+    passCountChange: NumChangeMetric | null;
+
+    constructor(props: FormComparisonOverviewProps) {
+        this.formA = props.formA;
+        this.formB = props.formB;
+
+        this.avgMarksChange = NumChangeMetric.calculateChange(this.formA.avgMarks, this.formB.avgMarks);
+        this.avgPercentChange = NumChangeMetric.calculateChange(this.formA.avgPercent, this.formB.avgPercent);
+        this.avgTimeChange = NumChangeMetric.calculateChange(this.formA.avgTime, this.formB.avgTime);
+
+        if (this.formA.passRate !== null && this.formB.passRate !== null) {
+            this.passRateChange = NumChangeMetric.calculateChange(this.formA.passRate, this.formB.passRate);
+            this.passCountChange = NumChangeMetric.calculateChange(this.formA.passCount!, this.formB.passCount!);
+        } else {
+            this.passRateChange = null;
+            this.passCountChange = null;
+        }
+    }
+
+    static fromJson(json: JSONParams): FormComparisonOverview {
+        return new FormComparisonOverview({
+            formA: FormItem.fromJson(json.formA),
+            formB: FormItem.fromJson(json.formB)
+        });
+    }
+
+
+}

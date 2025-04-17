@@ -1,27 +1,57 @@
-import { useAdminFormLayoutStore } from "./storeContext";
+import { useAdminFormStore } from "./storeCtx";
 import { observer } from "mobx-react-lite";
 import AppErrorView from "@/ui/widgets/error/AppErrorView";
-import {Loader} from "@/ui/widgets/loaders/Loader";
-
+import { Loader } from "@/ui/widgets/loaders/Loader";
+import { FilledButton } from "@/ui/widgets/buttons/FilledButton";
+import { ReactNode, useEffect } from "react";
+import { ApiException } from "@/domain/exceptions/ApiException";
+import clsx from "clsx";
 
 export type AdminFormLayoutParams = {
     permalink: string;
-}
+};
 
+type AdminFormLayoutProps = {
+    children: React.ReactNode;
+    layoutParams: AdminFormLayoutParams;
+};
 
-function AdminFormLayout({ children, layoutParams }: { children: React.ReactNode, layoutParams: AdminFormLayoutParams }) {
-    const formState = useAdminFormLayoutStore().formState;
+const AdminFormLayout = observer(({ children, layoutParams }: AdminFormLayoutProps) => {
+    const store = useAdminFormStore();
+    const { formState } = store;
+
+    useEffect(() => {
+        store.loadFormDetail();
+    }, [store, layoutParams.permalink]);
 
     if (formState.isError) {
-        const e = formState.error!;
-        return <Centered><AppErrorView message={e.message} description={e.description} actions={[]} /></Centered>;
+        const error = formState.error!;
+    
+        const actions: ReactNode[] = [
+            <FilledButton key="retry" onClick={() => store.loadFormDetail()}>
+                Retry
+            </FilledButton>
+        ];
+    
+        return (
+            <AppErrorView
+                className="p-page w-screen h-screen"
+                message={error.message}
+                description={error.description}
+                actions={actions}
+            />
+        );
     }
+    
+
 
     if (formState.isSuccess) {
-        return <>
-            <AdminFormHeader />
-            {children}
-        </>;
+        return (
+            <>
+                <AdminFormHeader />
+                {children}
+            </>
+        );
     }
 
     return (
@@ -29,15 +59,24 @@ function AdminFormLayout({ children, layoutParams }: { children: React.ReactNode
             <Loader />
         </Centered>
     );
-}
+});
 
-
-export default observer(AdminFormLayout);
+export default AdminFormLayout;
 
 function AdminFormHeader() {
-    return (<></>);
+    return (
+        <div />
+    );
 }
 
-function Centered({ children }: { children: React.ReactNode }) {
-    return <div className="flex flex-col h-screen w-screen justify-center items-center">{children}</div>;
+function Centered({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+    return (
+        <div
+            className={clsx("flex flex-col w-screen h-screen justify-center items-center", props.className)}
+            style={{ margin: 0 }}
+            {...props}
+        >
+            {children}
+        </div>
+    );
 }

@@ -4,9 +4,11 @@ export const TimeDisplayUtil = {
             throw new Error("Seconds cannot be negative");
         }
 
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const remainingSeconds = seconds % 60;
+        const totalSeconds = Math.round(seconds);
+
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const remainingSeconds = totalSeconds % 60;
 
         const parts: string[] = [];
         if (hours > 0) {

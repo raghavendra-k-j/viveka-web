@@ -15,19 +15,19 @@ export class ResEither<E extends Error, T> {
         return new ResEither<E, T>(error, null);
     }
 
-    public hasData(): boolean {
+    get hasData(): boolean {
         return this.data !== null;
     }
 
-    public hasError(): boolean {
+    get hasError(): boolean {
         return this.error !== null;
     }
 
     public getOrThrow(): T {
-        if (this.hasError()) {
+        if (this.hasError) {
             throw this.error;
         }
-        if (this.hasData()) {
+        if (this.hasData) {
             return this.data as T;
         }
         throw new Error("No data available in ResEither.");

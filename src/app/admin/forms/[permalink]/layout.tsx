@@ -1,7 +1,7 @@
 "use client";
 
 import AdminFormLayout, { AdminFormLayoutParams } from "@/ui/features/admin/forms/byid/layout";
-import { AdminFormLayoutContextProvider } from "@/ui/features/admin/forms/byid/storeContext";
+import { AdminFormStoreProvider } from "@/ui/features/admin/forms/byid/storeCtx";
 import { useParams } from "next/navigation";
 
 
@@ -10,7 +10,7 @@ export default function AdminFormLayoutRoute({ children, }: { children: React.Re
     const params = useParams<AdminFormLayoutParams>();
 
     return (
-        <AdminFormLayoutContextProvider layoutParams ={params}>
+        <AdminFormStoreProvider layoutParams ={params}>
             <AdminFormLayout layoutParams={params}>{children}</AdminFormLayout>
-        </AdminFormLayoutContextProvider>);
+        </AdminFormStoreProvider>);
 }

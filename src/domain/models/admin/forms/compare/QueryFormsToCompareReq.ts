@@ -1,7 +1,5 @@
 import { JSONParams } from "@/core/types/JSONParams";
 import { AssessmentType } from "@/domain/models/commons/forms/AssessmentType";
-import { CompareFormItem } from "./CompareFormItem";
-import { PageInfo } from "@/domain/models/commons/pagination/pageinfo";
 
 
 type QueryFormsToCompareReqProps = {
@@ -12,7 +10,7 @@ type QueryFormsToCompareReqProps = {
     pageSize: number;
 }
 
-class QueryFormsToCompareReq {
+export class QueryFormsToCompareReq {
     formId: number;
     searchQuery?: string;
     assessmentType?: AssessmentType;
@@ -37,31 +35,3 @@ class QueryFormsToCompareReq {
         }
     }
 }
-
-
-type QueryFormsToCompareResProps = {
-    items: CompareFormItem[];
-    pageInfo: PageInfo;
-}
-
-
-class QueryFormsToCompareRes {
-    items: CompareFormItem[];
-    pageInfo: PageInfo;
-
-    constructor(props: QueryFormsToCompareResProps) {
-        this.items = props.items;
-        this.pageInfo = props.pageInfo;
-    }
-
-    static fromJson(json: JSONParams): QueryFormsToCompareRes {
-        return new QueryFormsToCompareRes({
-            items: json.items.map((item: JSONParams) => CompareFormItem.fromJson(item)),
-            pageInfo: PageInfo.fromJson(json.pageInfo)
-        });
-    }
-}
-
-
-
-export { QueryFormsToCompareReq, QueryFormsToCompareRes };

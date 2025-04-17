@@ -15,7 +15,7 @@
   --btn-loader-size: var(--dimen-btn-md-loader-size);
 }
 
-.btn--small {
+.btn--sm {
   padding: var(--dimen-btn-sm-py) var(--dimen-btn-sm-px);
   font-size: var(--dimen-btn-sm-font-size);
   min-height: var(--dimen-btn-sm-min-height);

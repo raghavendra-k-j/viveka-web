@@ -1,0 +1,59 @@
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dialog-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: hidden;
+}
+
+.dialog-panel {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(2rem);
+}
+
+.radius-dialog {
+  border-radius: var(--radius-sm);
+}
+
+.radius-dialog-t {
+  border-top-left-radius: var(--radius-sm);
+  border-top-right-radius: var(--radius-sm);
+}
+
+.radius-dialog-b {
+  border-bottom-left-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.dialog-default-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-content-primary);
+}
+
+.border-dialog-divider {
+  border-color: var(--color-border);
+}
+
+
+.dialog-close-button {
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  color: var(--color-text-content-primary);
+  cursor: pointer;
+}
+
+.dialog-close-button:hover {
+  background-color: var(--color-surface-hover);
+  border-radius: var(--radius-sm);
+}

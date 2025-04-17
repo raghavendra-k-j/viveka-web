@@ -1,12 +1,14 @@
 "use client";
 
 import { observer } from "mobx-react-lite";
-import { useAdminFormCompareStore } from "./storeContext";
+import { useAdminFormCompareStore } from "./storeCtx";
 import AppErrorView from "@/ui/widgets/error/AppErrorView";
 import { Loader } from "@/ui/widgets/loaders/Loader";
-import { CompareTabFragment } from "./controller";
-import CompareResultTab from "./CompareResult";
-import SelectAssessmentTab from "./SelectAssessmentTab";
+import { CompareTabFragment } from "./store";
+import CompareResultTab from "./widgets/CompareResult";
+import SelectFormTab from "./widgets/SelectFormTab";
+import { useEffect } from "react";
+import { FilledButton } from "@/ui/widgets/buttons/FilledButton";
 
 
 
@@ -14,38 +16,68 @@ function AdminFormComparePage() {
     const store = useAdminFormCompareStore();
     const recommendationsState = store.recommendationsState;
 
+    useEffect(() => {
+        if (store.recommendationsState.isInitial) {
+            store.queryComparisonRecommendations();
+        }
+    }, [store]);
+
+
     if (recommendationsState.isError) {
         const e = recommendationsState.error!;
-        return <Centered><AppErrorView message={e.message} description={e.description} actions={[]} /></Centered>;
+        return (<PageContainer>
+            <CenteredContent>
+                <AppErrorView
+                    message={e.message}
+                    description={e.description}
+                    actions={[
+                        <FilledButton key="retry" onClick={() => store.queryComparisonRecommendations()}>
+                            Retry
+                        </FilledButton>
+                    ]}
+                />
+
+            </CenteredContent>
+        </PageContainer>);
     }
 
     if (recommendationsState.isSuccess) {
-        return <ObservedMainContent />;
+        return (<PageContainer>
+            <MainContent />
+        </PageContainer>);
     }
 
-    return <Centered><Loader /></Centered>;
+    return (<CenteredContent>
+        <Loader />
+    </CenteredContent>);
 }
 
-function Centered({ children }: { children: React.ReactNode }) {
+function PageContainer({ children }: { children: React.ReactNode }) {
+    return (
+        <div className="w-full max-w-6xl mx-auto">
+            {children}
+        </div>
+    );
+}
+
+function CenteredContent({ children }: { children: React.ReactNode }) {
     return <div className="flex flex-col h-screen w-screen justify-center items-center">{children}</div>;
 }
 
 
-function MainContent() {
+const MainContent = observer(() => {
     const store = useAdminFormCompareStore();
 
     if (store.currentFragment === CompareTabFragment.RESULT_PAGE) {
-        return <CompareResultTab />;
+        return (<CompareResultTab />);
     }
     else if (store.currentFragment === CompareTabFragment.SELECT_FORM) {
-        return <SelectAssessmentTab />;
+        return (<SelectFormTab />);
     }
     else {
-        return <Centered><p>Unknown fragment: {store.currentFragment}</p></Centered>;
+        return (<CenteredContent><p>Unknown fragment: {store.currentFragment}</p></CenteredContent>);
     }
-}
-
-const ObservedMainContent = observer(MainContent);
+});
 
 
 

@@ -2,6 +2,12 @@
 @import "./theme.css";
 @import "./components/loader.css";
 @import "./components/buttons.css";
+@import "./components/dialog.css";
+@import "./components/search-input.css";
+
+@theme {
+  --color-content-primary: #ff0000;
+}
 
 :root {
   --color-background: #f2f4f7;
@@ -11,57 +17,128 @@ body {
   background: var(--color-background);
 }
 
+/* WebKit-based browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* or a subtle color */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.4); /* neutral gray */
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 100, 100, 0.6);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin; /* Options: auto | thin | none */
+  scrollbar-color: rgba(100, 100, 100, 0.4) transparent;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-
 /* =====================
    Font Sizes - Semantic
    ===================== */
 
 /* Small scale */
-.fs-sm-m { font-size: 10px; }
-.fs-sm { font-size: 11px; }
-.fs-sm-p { font-size: 12px; }
+.fs-sm-m {
+  font-size: 10px;
+}
+.fs-sm {
+  font-size: 11px;
+}
+.fs-sm-p {
+  font-size: 12px;
+}
 
 /* Medium scale */
-.fs-md-m { font-size: 13px; }
-.fs-md { font-size: 14px; }
-.fs-md-p { font-size: 15px; }
+.fs-md-m {
+  font-size: 13px;
+}
+.fs-md {
+  font-size: 14px;
+}
+.fs-md-p {
+  font-size: 15px;
+}
 
 /* Large scale */
-.fs-lg-m { font-size: 16px; }
-.fs-lg { font-size: 17px; }
-.fs-lg-p { font-size: 18px; }
+.fs-lg-m {
+  font-size: 16px;
+}
+.fs-lg {
+  font-size: 17px;
+}
+.fs-lg-p {
+  font-size: 18px;
+}
 
 /* Extra Large scale */
-.fs-xl-m { font-size: 19px; }
-.fs-xl { font-size: 20px; }
-.fs-xl-p { font-size: 21px; }
+.fs-xl-m {
+  font-size: 19px;
+}
+.fs-xl {
+  font-size: 20px;
+}
+.fs-xl-p {
+  font-size: 21px;
+}
 
 /* 2XL scale */
-.fs-2xl-m { font-size: 22px; }
-.fs-2xl { font-size: 23px; }
-.fs-2xl-p { font-size: 24px; }
-
+.fs-2xl-m {
+  font-size: 22px;
+}
+.fs-2xl {
+  font-size: 23px;
+}
+.fs-2xl-p {
+  font-size: 24px;
+}
 
 /* =====================
    Font Weights - Semantic
    ===================== */
 
-.fw-thin        { font-weight: 100; }
-.fw-extralight  { font-weight: 200; }
-.fw-light       { font-weight: 300; }
-.fw-regular     { font-weight: 400; }
-.fw-medium      { font-weight: 500; }
-.fw-semibold    { font-weight: 600; }
-.fw-bold        { font-weight: 700; }
-.fw-extrabold   { font-weight: 800; }
-.fw-black       { font-weight: 900; }
-
+.fw-thin {
+  font-weight: 100;
+}
+.fw-extralight {
+  font-weight: 200;
+}
+.fw-light {
+  font-weight: 300;
+}
+.fw-regular {
+  font-weight: 400;
+}
+.fw-medium {
+  font-weight: 500;
+}
+.fw-semibold {
+  font-weight: 600;
+}
+.fw-bold {
+  font-weight: 700;
+}
+.fw-extrabold {
+  font-weight: 800;
+}
+.fw-black {
+  font-weight: 900;
+}
 
 .text-content-primary {
   color: var(--color-content-primary);
@@ -80,4 +157,38 @@ body {
 }
 .text-content-disabled {
   color: var(--color-content-disabled);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-on-primary {
+  color: var(--color-on-primary);
+}
+
+.bg-background {
+  background-color: var(--color-background);
+}
+
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+
+
+.bg-primary-subtle {
+  background-color: var(--color-primary-bg-subtle);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.p-page {
+  padding: 24px;
+}
+
+.dialog-shadow {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }

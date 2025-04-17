@@ -1,12 +1,15 @@
-import { AppException } from "@/core/exceptions/AppException";
 import { ResEither } from "@/core/utils/ResEither";
 import AdminApiClient from "@/data/sources/AdminApiClient";
 import { ApiException } from "@/domain/exceptions/ApiException";
 import { AdminFormDetail } from "@/domain/models/admin/forms/AdminFormDetail";
-import { CompareRecommendationRes } from "@/domain/models/admin/forms/compare/CompareRecommendationRes";
-import { FormComparisonOverviewReq, FormComparisonOverviewRes } from "@/domain/models/admin/forms/compare/FormComparisonOverview";
-import { QueryFormsToCompareReq, QueryFormsToCompareRes } from "@/domain/models/admin/forms/compare/QueryFormsToCompareModel";
-import { UserAssessmentCompareReq, UserAssessmentCompareRes } from "@/domain/models/admin/forms/compare/UserAssessmentCompareModel";
+import { ComparisonRecommendations } from "@/domain/models/admin/forms/compare/ComparisonRecommendations";
+import { QueryFormsToCompareReq } from "@/domain/models/admin/forms/compare/QueryFormsToCompareReq";
+import { QueryFormsToCompareRes } from "@/domain/models/admin/forms/compare/QueryFormsToCompareRes";
+import { FormComparisonOverviewReq } from "@/domain/models/admin/forms/compare/FormComparisonOverviewReq";
+import { FormCompareUserListReq } from "@/domain/models/admin/forms/compare/FormCompareUserListReq";
+import { FormComparisonOverview } from "@/domain/models/admin/forms/compare/FormComparisonOverview";
+import { FormCompareUserList } from "@/domain/models/admin/forms/compare/FormCompareUserList";
+import { FormCompareDetails } from "@/domain/models/admin/forms/compare/FormCompareDetails";
 
 type AdminFormsRepoParams = {
     adminApiClient: AdminApiClient;
@@ -33,7 +36,7 @@ class AdminFormsRepo {
 
     async queryFormsToCompare(req: QueryFormsToCompareReq): Promise<ResEither<ApiException, QueryFormsToCompareRes>> {
         try {
-            const response = await this.adminApiClient.getAxios().post(`/api/v1/admin/forms/${req.formId}/compare/assessments/query`, req.toJson());
+            const response = await this.adminApiClient.getAxios().post(`/api/v1/admin/forms/${req.formId}/compare/candidates`, req.toJson());
             const data = QueryFormsToCompareRes.fromJson(response.data);
             return ResEither.success(data);
         } catch (e) {
@@ -42,10 +45,10 @@ class AdminFormsRepo {
         }
     }
 
-    async getRecommendedFormsToCompare(formId: string): Promise<ResEither<ApiException, CompareRecommendationRes>> {
+    async queryComparisonRecommendations(formId: number): Promise<ResEither<ApiException, ComparisonRecommendations>> {
         try {
-            const response = await this.adminApiClient.getAxios().get(`/api/v1/admin/forms/${formId}/compare/assessments/recommendations`);
-            const data = CompareRecommendationRes.fromJson(response.data);
+            const response = await this.adminApiClient.getAxios().get(`/api/v1/admin/forms/${formId}/compare/recommendations`);
+            const data = ComparisonRecommendations.fromJson(response.data);
             return ResEither.success(data);
         } catch (e) {
             const error = ApiException.fromApiError(e);
@@ -53,10 +56,22 @@ class AdminFormsRepo {
         }
     }
 
-    async getComparisonOverview(req: FormComparisonOverviewReq): Promise<ResEither<ApiException, FormComparisonOverviewRes>> {
+    async getFormCompareDetails(formAId: number, formBId: number): Promise<ResEither<ApiException, FormCompareDetails>> {
+        try {
+            const response = await this.adminApiClient.getAxios().get(`/api/v1/admin/forms/${formAId}/compare/${formBId}/details`);
+            const data = FormCompareDetails.fromJson(response.data);
+            return ResEither.success(data);
+        } catch (e) {
+            const error = ApiException.fromApiError(e);
+            return ResEither.failure(error);
+        }
+    }
+
+
+    async getComparisonOverview(req: FormComparisonOverviewReq): Promise<ResEither<ApiException, FormComparisonOverview>> {
         try {
             const response = await this.adminApiClient.getAxios().post(`/api/v1/admin/forms/${req.formAId}/compare/overview`, req.toJson());
-            const data = FormComparisonOverviewRes.fromJson(response.data);
+            const data = FormComparisonOverview.fromJson(response.data);
             return ResEither.success(data);
         } catch (e) {
             const error = ApiException.fromApiError(e);
@@ -64,19 +79,16 @@ class AdminFormsRepo {
         }
     }
 
-    async getIndividualUsersComparison(req: UserAssessmentCompareReq): Promise<ResEither<ApiException, UserAssessmentCompareRes>> {
+    async getComparisonUserList(req: FormCompareUserListReq): Promise<ResEither<ApiException, FormCompareUserList>> {
         try {
             const response = await this.adminApiClient.getAxios().post(`/api/v1/admin/forms/${req.formAId}/compare/users`, req.toJson());
-            const data = UserAssessmentCompareRes.fromJson(response.data);
+            const data = FormCompareUserList.fromJson(response.data);
             return ResEither.success(data);
         } catch (e) {
             const error = ApiException.fromApiError(e);
             return ResEither.failure(error);
         }
     }
-
-
-
 }
 
 export default AdminFormsRepo;

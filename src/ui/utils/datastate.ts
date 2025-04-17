@@ -60,6 +60,10 @@ class DataState<T> {
         return this.status === DataStateStatus.ERROR;
     }
 
+    toString(): string {
+        return `DataState { status: ${DataStateStatus[this.status]}, data: ${JSON.stringify(this.data)}, error: ${this.error?.message ?? null} }`;
+    }
+
 
 
         

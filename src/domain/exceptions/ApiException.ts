@@ -15,25 +15,38 @@ export class ApiException extends AppException {
     constructor(params: ApiExceptionParams) {
         super(params);
         this.statusCode = params.statusCode ?? null;
+        Object.setPrototypeOf(this, ApiException.prototype);
     }
 
     get isForbidden() { return this.statusCode === 403; }
     get isNotFound() { return this.statusCode === 404; }
     get isUnauthorized() { return this.statusCode === 401; }
-    get isServerError() { return this.statusCode === 500; }
     get isBadRequest() { return this.statusCode === 400; }
     get isConflict() { return this.statusCode === 409; }
     get isTooManyRequests() { return this.statusCode === 429; }
     get isServiceUnavailable() { return this.statusCode === 503; }
     get isGatewayTimeout() { return this.statusCode === 504; }
 
+    get isClientError(): boolean {
+        return (
+            this.isBadRequest ||
+            this.isUnauthorized ||
+            this.isForbidden ||
+            this.isNotFound ||
+            this.isConflict
+        );
+    }
+
+    get isServerError(): boolean {
+        return this.statusCode !== null && this.statusCode >= 500 && this.statusCode < 600;
+    }
+
+
     toString(): string {
         return `ApiException: ${this.statusCode !== null ? this.statusCode : "No Status Code"} - ${this.message}${this.hasDesc() ? ` - ${this.description}` : ""}`;
     }
 
     static fromApiError(error: unknown): ApiException {
-        Logger.error("ApiException.fromApiError: error:", error);
-
         // Axios-like error with response
         if (typeof error === "object" && error !== null) {
             const errObj = error as any;
