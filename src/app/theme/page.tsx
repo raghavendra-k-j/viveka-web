@@ -5,6 +5,7 @@ import {LoaderDemo} from "./LoaderDemo";
 import SearchInputDemo from "./SearchInputDemo";
 import FilledButtonsDemo from "./FilledButtonsDemo";
 import { DialogDemo } from "./DialogDemo";
+import PaginationDemo from "./PaginationDemo";
 
 
 export default function ThemePage() {
@@ -17,6 +18,10 @@ export default function ThemePage() {
            <OutlinedButtonsDemo/>
            <hr/>
            <DialogDemo/>
+           <hr/>
+           <SearchInputDemo/>
+           <hr/>
+           <PaginationDemo/>
         </main>
     );
 }

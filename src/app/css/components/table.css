@@ -1,0 +1,13 @@
+.table-head {
+  background-color: var(--color-gray-50);
+}
+
+.table-bordered {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid var(--color-gray-200);
+}

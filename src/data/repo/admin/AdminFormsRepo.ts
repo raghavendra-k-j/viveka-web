@@ -70,7 +70,7 @@ class AdminFormsRepo {
 
     async getComparisonOverview(req: FormComparisonOverviewReq): Promise<ResEither<ApiException, FormComparisonOverview>> {
         try {
-            const response = await this.adminApiClient.getAxios().post(`/api/v1/admin/forms/${req.formAId}/compare/overview`, req.toJson());
+            const response = await this.adminApiClient.getAxios().post(`/api/v1/admin/forms/${req.formAId}/compare/${req.formBId}/overview`, req.toJson());
             const data = FormComparisonOverview.fromJson(response.data);
             return ResEither.success(data);
         } catch (e) {
@@ -81,7 +81,7 @@ class AdminFormsRepo {
 
     async getComparisonUserList(req: FormCompareUserListReq): Promise<ResEither<ApiException, FormCompareUserList>> {
         try {
-            const response = await this.adminApiClient.getAxios().post(`/api/v1/admin/forms/${req.formAId}/compare/users`, req.toJson());
+            const response = await this.adminApiClient.getAxios().post(`/api/v1/admin/forms/${req.formAId}/compare/${req.formBId}/users`, req.toJson());
             const data = FormCompareUserList.fromJson(response.data);
             return ResEither.success(data);
         } catch (e) {

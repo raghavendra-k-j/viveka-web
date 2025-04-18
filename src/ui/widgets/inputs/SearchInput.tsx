@@ -1,60 +1,67 @@
-import React from "react";
+import React, { useRef } from "react";
 import clsx from "clsx";
+import { SearchIcon, X } from "lucide-react";
 
-export type SearchInputSize = "sm" | "md" | (string & {});
+export type SearchInputSize = "sm" | "md" | "lg" | (string & {});
 
 interface BaseSearchInputProps {
-    onSubmit?: (value: string) => void;
-    inputSize?: SearchInputSize;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit?: (value: string) => void;
+  inputSize?: SearchInputSize;
+  onClear?: () => void;
 }
 
-type SearchInputProps = BaseSearchInputProps &
-    React.InputHTMLAttributes<HTMLInputElement>;
+export type SearchInputProps = BaseSearchInputProps &
+  React.InputHTMLAttributes<HTMLInputElement> & {
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
 
-export const SearchInput: React.FC<SearchInputProps> = (props) => {
-    const { inputSize = "md", disabled = false, value = "" } = props;
+export const SearchInput: React.FC<SearchInputProps> = ({
+  onSubmit,
+  onClear,
+  inputSize = "md",
+  value,
+  onChange,
+  className,
+  ...rest
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && props.onSubmit) {
-            props.onSubmit(props.value as string);
-        }
-    };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && onSubmit) {
+      onSubmit(value);
+    }
+  };
 
-    const resolvedSizeClass = clsx("search-input", {
-        [`search-input--${inputSize}`]: inputSize,
-        [props.className ?? ""]: props.className,
-    });
+  const handleClear = () => {
+    onClear?.();
+    inputRef.current?.focus();
+  };
 
-    return (
-        <div className={resolvedSizeClass} aria-disabled={disabled}>
-            <input
-                type="text"
-                className="search-input__input"
-                placeholder={props.placeholder}
-                value={props.value ?? ""}
-                onChange={(e) =>
-                    (props.onChange as (e: React.ChangeEvent<HTMLInputElement>) => void)?.(e)
-                }
-                onKeyDown={handleKeyDown}
-                disabled={disabled}
-                {...props}
-            />
+  return (
+    <div
+      className={clsx("search-input", `search-input--${inputSize}`, className)}
+    >
+      <span className="search-input__icon">
+        <SearchIcon size="100%" strokeWidth={1.5} />
+      </span>
 
-            {/* Clear Button */}
-            {props.value && !props.disabled && (
-                <button
-                    type="button"
-                    className="search-input__clear"
-                    onClick={() =>
-                        (props.onChange as (e: React.ChangeEvent<HTMLInputElement>) => void)?.({
-                            target: { value: "" },
-                        } as React.ChangeEvent<HTMLInputElement>)
-                    }
-                    aria-label="Clear search input"
-                >
-                </button>
-            )}
-        </div>
-    );
+      <input
+        type="search"
+        ref={inputRef}
+        value={value}
+        onChange={onChange}
+        onKeyDown={handleKeyDown}
+        className="search-input__field"
+        placeholder="Search..."
+        {...rest}
+      />
+
+      {value && (
+        <span className="search-input__clear" onClick={handleClear}>
+          <X size="100%" strokeWidth={1.5} />
+        </span>
+      )}
+    </div>
+  );
 };

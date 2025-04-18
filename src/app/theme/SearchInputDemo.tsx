@@ -1,64 +1,69 @@
-'use client';
-
-import React, { useState } from 'react';
-import { SearchInput } from '@/ui/widgets/inputs/SearchInput';
-import { InputSize } from '@/ui/widgets/inputs/InputSize';
+import React, { useState } from "react";
+import { SearchInput } from "@/ui/widgets/inputs/SearchInput";
+import { FilledButton } from "@/ui/widgets/buttons/FilledButton";
 
 export default function SearchInputDemo() {
-    const [value, setValue] = useState('');
-    const [debouncedValue, setDebouncedValue] = useState('');
-    const [submittedValue, setSubmittedValue] = useState('');
+  const [values, setValues] = useState({
+    sm: "",
+    md: "",
+    lg: "",
+  });
 
-    return (
-        <div className="space-y-6 max-w-md mx-auto">
-            <h2 className="font-semibold text-lg">Search Input Variants</h2>
+  const handleChange = (size: "sm" | "md" | "lg") => 
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValues((prev) => ({ ...prev, [size]: e.target.value }));
+    };
 
-            <div className="space-y-2">
-                <p className="text-sm font-medium">Default (controlled)</p>
-                <SearchInput
-                    value={value}
-                    onChange={setValue}
-                />
-                <div className="text-xs text-gray-600">Value: {value}</div>
-            </div>
+  const handleClear = (size: "sm" | "md" | "lg") => () => {
+    setValues((prev) => ({ ...prev, [size]: "" }));
+  };
 
-            <div className="space-y-2">
-                <p className="text-sm font-medium">With Debounce</p>
-                <SearchInput
-                    value={value}
-                    onChange={setValue}
-                    onDebouncedChange={setDebouncedValue}
-                />
-                <div className="text-xs text-gray-600">Debounced Value: {debouncedValue}</div>
-            </div>
-
-            <div className="space-y-2">
-                <p className="text-sm font-medium">With Submit (Enter)</p>
-                <SearchInput
-                    value={value}
-                    onChange={setValue}
-                    onSubmit={setSubmittedValue}
-                />
-                <div className="text-xs text-gray-600">Submitted Value: {submittedValue}</div>
-            </div>
-
-            <div className="space-y-2">
-                <p className="text-sm font-medium">Small Size</p>
-                <SearchInput
-                    value={value}
-                    onChange={setValue}
-                    size={InputSize.small}
-                />
-            </div>
-
-            <div className="space-y-2">
-                <p className="text-sm font-medium">Disabled</p>
-                <SearchInput
-                    value={value}
-                    onChange={setValue}
-                    disabled={true}
-                />
-            </div>
+  return (
+    <div className="space-y-10 p-6">
+      {/* Small */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Search Input - Small</h2>
+        <div className="flex items-center gap-4">
+          <SearchInput
+            inputSize="sm"
+            value={values.sm}
+            onChange={handleChange("sm")}
+            onClear={handleClear("sm")}
+            placeholder="Search (sm)..."
+          />
+          <FilledButton size="sm">Go</FilledButton>
         </div>
-    );
+      </section>
+
+      {/* Medium */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Search Input - Medium</h2>
+        <div className="flex items-center gap-4">
+          <SearchInput
+            inputSize="md"
+            value={values.md}
+            onChange={handleChange("md")}
+            onClear={handleClear("md")}
+            placeholder="Search (md)..."
+          />
+          <FilledButton size="md">Go</FilledButton>
+        </div>
+      </section>
+
+      {/* Large */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Search Input - Large</h2>
+        <div className="flex items-center gap-4">
+          <SearchInput
+            inputSize="lg"
+            value={values.lg}
+            onChange={handleChange("lg")}
+            onClear={handleClear("lg")}
+            placeholder="Search (lg)..."
+          />
+          <FilledButton size="lg">Go</FilledButton>
+        </div>
+      </section>
+    </div>
+  );
 }

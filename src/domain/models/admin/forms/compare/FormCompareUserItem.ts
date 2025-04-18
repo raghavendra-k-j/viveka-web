@@ -47,6 +47,7 @@ export class FormCompareUserItem {
 
     formA: FormCompareUserItemDetail;
     formB: FormCompareUserItemDetail;
+    participantKey: string;
 
 
     constructor(props: FormCompareUserItemProps) {
@@ -55,6 +56,7 @@ export class FormCompareUserItem {
 
         this.formA = props.formA;
         this.formB = props.formB;
+        this.participantKey = props.userTile ? String(props.userTile.id) : "guest_" + String(props.guestTile!.id);
     }
 
     static fromJson(json: JSONParams): FormCompareUserItem {

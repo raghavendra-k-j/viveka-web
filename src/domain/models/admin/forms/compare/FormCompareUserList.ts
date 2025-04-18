@@ -1,4 +1,4 @@
-import { PageInfo } from "@/domain/models/commons/pagination/pageinfo";
+import { PageInfo } from "@/domain/models/commons/pagination/PageInfo";
 import { FormCompareUserItem } from "./FormCompareUserItem";
 import { JSONParams } from "@/core/types/JSONParams";
 

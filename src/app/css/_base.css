@@ -1,0 +1,7 @@
+body {
+  background: var(--color-background);
+}
+
+.p-page {
+  padding: 24px;
+}

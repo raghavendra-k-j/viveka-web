@@ -2,28 +2,27 @@
 
 import { makeObservable, observable, runInAction } from "mobx";
 import { FormComparisonOverview } from "@/domain/models/admin/forms/compare/FormComparisonOverview";
-import { FormCompareUserList } from "@/domain/models/admin/forms/compare/FormCompareUserList";
-import { FormCompareDetails } from "@/domain/models/admin/forms/compare/FormCompareDetails";
 import { FormCompareDetail } from "@/domain/models/admin/forms/compare/FormCompareDetail";
 import { DataState } from "@/ui/utils/datastate";
+import { FormCompareDetailsVm, FormCompareUserListVm } from "./Models";
 
 
 type CompareStoreProps = {
-    formCompareDetails: FormCompareDetails;
+    formCompareDetails: FormCompareDetailsVm;
 }
 
 export class CompareStore {
-    formCompareDetails: FormCompareDetails;
+    formCompareDetails: FormCompareDetailsVm;
     overViewState = DataState.initial<FormComparisonOverview>();
-    usersState = DataState.initial<FormCompareUserList>();
+    usersState = DataState.initial<FormCompareUserListVm>();
     searchQuery: string = "";
 
     get formA(): FormCompareDetail {
-        return this.formCompareDetails.formA;
+        return this.formCompareDetails.item.formA;
     }
 
     get formB(): FormCompareDetail {
-        return this.formCompareDetails.formB;
+        return this.formCompareDetails.item.formB;
     }
 
     onSearchQueryChange(value: string): void {

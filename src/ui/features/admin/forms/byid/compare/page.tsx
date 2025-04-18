@@ -67,16 +67,13 @@ function CenteredContent({ children }: { children: React.ReactNode }) {
 
 const MainContent = observer(() => {
     const store = useAdminFormCompareStore();
-
     if (store.currentFragment === CompareTabFragment.RESULT_PAGE) {
         return (<CompareResultTab />);
     }
-    else if (store.currentFragment === CompareTabFragment.SELECT_FORM) {
+    if (store.currentFragment === CompareTabFragment.SELECT_FORM) {
         return (<SelectFormTab />);
     }
-    else {
-        return (<CenteredContent><p>Unknown fragment: {store.currentFragment}</p></CenteredContent>);
-    }
+    return (<CenteredContent><p>Unknown fragment: {store.currentFragment}</p></CenteredContent>);
 });
 
 

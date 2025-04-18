@@ -1,0 +1,55 @@
+
+/* Small */
+.fs-sm-m {
+  font-size: 10px;
+}
+.fs-sm {
+  font-size: 11px;
+}
+.fs-sm-p {
+  font-size: 12px;
+}
+
+/* Medium */
+.fs-md-m {
+  font-size: 13px;
+}
+.fs-md {
+  font-size: 14px;
+}
+.fs-md-p {
+  font-size: 15px;
+}
+
+/* Large */
+.fs-lg-m {
+  font-size: 16px;
+}
+.fs-lg {
+  font-size: 17px;
+}
+.fs-lg-p {
+  font-size: 18px;
+}
+
+/* Extra Large */
+.fs-xl-m {
+  font-size: 19px;
+}
+.fs-xl {
+  font-size: 20px;
+}
+.fs-xl-p {
+  font-size: 21px;
+}
+
+/* 2XL */
+.fs-2xl-m {
+  font-size: 22px;
+}
+.fs-2xl {
+  font-size: 23px;
+}
+.fs-2xl-p {
+  font-size: 24px;
+}

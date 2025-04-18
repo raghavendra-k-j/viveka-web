@@ -1,0 +1,15 @@
+.border-primary {
+  border-color: var(--color-primary);
+}
+.border-default {
+  border-color: var(--color-border-default);
+}
+.border-light {
+  border-color: var(--color-border-light);
+}
+.border-strong {
+  border-color: var(--color-border-strong);
+}
+.border-outlined {
+  border-color: var(--color-outlined-border);
+}

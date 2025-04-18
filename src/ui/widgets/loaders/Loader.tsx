@@ -9,8 +9,8 @@ type LoaderProps = {
 };
 
 export const Loader: React.FC<LoaderProps> = ({
-    size,
-    thickness,
+    size = "32px",
+    thickness = "4px",
     theme = 'primary',
 }) => {
     const styleVars: Record<string, string> = {};

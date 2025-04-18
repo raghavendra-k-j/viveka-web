@@ -26,10 +26,25 @@ export default function FilledButtonsDemo() {
         <h2 className="text-xl font-semibold">Filled Buttons - Small</h2>
         {themes.map((theme) => (
           <div key={theme} className="flex flex-wrap gap-4 items-center">
-            <FilledButton theme={theme} size="small">Default</FilledButton>
-            <FilledButton theme={theme} size="small" loading>Loading</FilledButton>
-            <FilledButton theme={theme} size="small" disabled>Disabled</FilledButton>
-            <FilledButton theme={theme} size="small" loading disabled>
+            <FilledButton theme={theme} size="sm">Default</FilledButton>
+            <FilledButton theme={theme} size="sm" loading>Loading</FilledButton>
+            <FilledButton theme={theme} size="sm" disabled>Disabled</FilledButton>
+            <FilledButton theme={theme} size="sm" loading disabled>
+              Loading + Disabled
+            </FilledButton>
+          </div>
+        ))}
+      </section>
+
+      {/* Large Size Buttons */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Filled Buttons - Large</h2>
+        {themes.map((theme) => (
+          <div key={theme} className="flex flex-wrap gap-4 items-center">
+            <FilledButton theme={theme} size="lg">Default</FilledButton>
+            <FilledButton theme={theme} size="lg" loading>Loading</FilledButton>
+            <FilledButton theme={theme} size="lg" disabled>Disabled</FilledButton>
+            <FilledButton theme={theme} size="lg" loading disabled>
               Loading + Disabled
             </FilledButton>
           </div>

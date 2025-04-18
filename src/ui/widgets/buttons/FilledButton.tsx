@@ -12,7 +12,7 @@ interface FilledButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
 }
 
 export const FilledButton: React.FC<FilledButtonProps> = ({
-    size = 'medium',
+    size = 'md',
     theme = 'primary',
     disabled = false,
     loading = false,

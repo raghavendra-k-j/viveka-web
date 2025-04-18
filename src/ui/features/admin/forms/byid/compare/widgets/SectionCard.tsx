@@ -22,7 +22,7 @@ type CompareSectionCardTitleProps = {
 
 const CompareSectionCardTitle = ({ children, className }: CompareSectionCardTitleProps) => {
     return (
-        <h2 className={clsx("fs-md-p fw-semibold text-content-primary", className)}>
+        <h2 className={clsx("fs-md-p font-semibold text-content-primary", className)}>
             {children}
         </h2>
     );

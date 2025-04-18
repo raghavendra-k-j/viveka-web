@@ -1,0 +1,17 @@
+.divide-default {
+  :where(& > :not(:last-child)) {
+    border-color: var(--color-border-default);
+  }
+}
+
+.divide-light {
+  :where(& > :not(:last-child)) {
+    border-color: var(--color-border-light);
+  }
+}
+
+.divide-strong {
+  :where(& > :not(:last-child)) {
+    border-color: var(--color-border-strong);
+  }
+}

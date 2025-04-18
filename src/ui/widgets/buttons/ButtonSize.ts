@@ -1,1 +1,1 @@
-export type ButtonSize = 'sm' | 'md' | (string & {});
+export type ButtonSize = 'xs' | 'sm' | 'md' | "lg" | (string & {});

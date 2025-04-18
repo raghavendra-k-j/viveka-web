@@ -3,15 +3,21 @@ import debounce from "lodash/debounce";
 import { AppException } from "@/core/exceptions/AppException";
 import { DataState } from "@/ui/utils/datastate";
 import { StringUtils } from "@/core/utils/StringUtils";
-import { QueryFormsToCompareRes } from "@/domain/models/admin/forms/compare/QueryFormsToCompareRes";
 import { QueryFormsToCompareReq } from "@/domain/models/admin/forms/compare/QueryFormsToCompareReq";
 import { AdminFormCompareStore } from "../store";
+import { QueryFormsToCompareResVm } from "./Models";
+import { FormCompareDetailsVm, FormCompareItemVm } from "../Models";
+import { withMinimumDelay } from "@/ui/utils/withMinimumDelay";
+import { searchDebounce } from "@/ui/utils/searchDebounce";
 
 export class SelectFormDialogStore {
+
     parentStore: AdminFormCompareStore;
-    loadState: DataState<QueryFormsToCompareRes>;
+    loadState: DataState<QueryFormsToCompareResVm>;
     searchQuery: string;
     currentPage: number;
+    selectedForm?: FormCompareItemVm;
+    pageSize: number;
     private debouncedLoadData: () => void;
 
     get data() {
@@ -23,14 +29,14 @@ export class SelectFormDialogStore {
         this.loadState = DataState.initial();
         this.searchQuery = "";
         this.currentPage = 1;
-
-
+        this.pageSize = 30;
         makeAutoObservable(this, {
             loadState: true,
             searchQuery: true,
             currentPage: true,
+            selectedForm: true,
         });
-        this.debouncedLoadData = debounce(() => this.loadData(1), 300);
+        this.debouncedLoadData = searchDebounce(() => this.loadData(1));
         this.initializeReactions();
     }
 
@@ -47,6 +53,11 @@ export class SelectFormDialogStore {
         this.searchQuery = query;
     }
 
+    get isPaginationRequired() {
+        return this.data.pageInfo.totalPages > 1;
+    }
+
+
     async loadData(page = this.currentPage) {
         try {
             runInAction(() => (this.loadState = DataState.loading()));
@@ -55,14 +66,16 @@ export class SelectFormDialogStore {
                 searchQuery: StringUtils.trimToUndefined(this.searchQuery),
                 formId: this.parentStore.formDetail.id,
                 page,
-                pageSize: 2,
+                pageSize: this.pageSize,
             });
 
-            const data = (await this.parentStore.parentStore.adminFormsService.queryFormsToCompare(req)).getOrThrow();
-
+            const response = await withMinimumDelay(
+                this.parentStore.parentStore.adminFormsService.queryFormsToCompare(req),
+            );
+            const data = response.getOrThrow();
 
             runInAction(() => {
-                this.loadState = DataState.success(data);
+                this.loadState = DataState.success(new QueryFormsToCompareResVm(data));
                 this.currentPage = page;
             });
         } catch (error) {
@@ -77,4 +90,24 @@ export class SelectFormDialogStore {
             this.loadData(page);
         }
     }
+
+
+    async onFormSelected(item: FormCompareItemVm): Promise<void> {
+        if (this.selectedForm === item) {
+            return;
+        }
+        this.selectedForm = item;
+        try {
+            runInAction(() => item.detailState = DataState.loading());
+            let data = (await this.parentStore.getFormCompareDetails({ formBId: item.item.id })).getOrThrow();
+            runInAction(() => item.detailState = DataState.success(data));
+            this.parentStore.onFormSelected(new FormCompareDetailsVm(data));
+        }
+        catch (error) {
+            const e = AppException.fromAny(error);
+            runInAction(() => (this.loadState = DataState.error({ error: e })));
+        }
+    }
+
+
 }

@@ -1,27 +1,53 @@
 .btn {
-  font-weight: var(--dimen-btn-md-font-weight);
+  font-weight: var(--dimen-btn-font-weight);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: var(--dimen-btn-md-radius);
+  border-radius: var(--dimen-btn-radius);
   cursor: pointer;
   transition: background 0.2s ease;
-  min-height: var(--dimen-btn-md-min-height);
-  min-width: var(--dimen-btn-md-min-width);
-  padding: var(--dimen-btn-md-py) var(--dimen-btn-md-px);
-  font-size: var(--dimen-btn-md-font-size);
   user-select: none;
-  --btn-loader-size: var(--dimen-btn-md-loader-size);
 }
+
+.btn--xs {
+  padding: var(--dimen-btn-xs-py) var(--dimen-btn-xs-px);
+  font-size: var(--dimen-btn-xs-font-size);
+  min-height: var(--dimen-btn-xs-min-height);
+  min-width: var(--dimen-btn-xs-min-width);
+  --btn-icon-size: var(--dimen-btn-xs-icon-size);
+  --btn-text-px: var(--dimen-btn-xs-px-text);
+}
+
 
 .btn--sm {
   padding: var(--dimen-btn-sm-py) var(--dimen-btn-sm-px);
   font-size: var(--dimen-btn-sm-font-size);
   min-height: var(--dimen-btn-sm-min-height);
   min-width: var(--dimen-btn-sm-min-width);
-  --btn-loader-size: var(--dimen-btn-sm-loader-size);
+  --btn-icon-size: var(--dimen-btn-sm-icon-size);
+  --btn-text-px: var(--dimen-btn-sm-px-text);
 }
+
+.btn--md {
+  padding: var(--dimen-btn-md-py) var(--dimen-btn-md-px);
+  font-size: var(--dimen-btn-md-font-size);
+  min-height: var(--dimen-btn-md-min-height);
+  min-width: var(--dimen-btn-md-min-width);
+  --btn-icon-size: var(--dimen-btn-md-icon-size);
+  --btn-text-px: var(--dimen-btn-md-px-text);
+}
+
+.btn--lg {
+  padding: var(--dimen-btn-lg-py) var(--dimen-btn-lg-px);
+  font-size: var(--dimen-btn-lg-font-size);
+  min-height: var(--dimen-btn-lg-min-height);
+  min-width: var(--dimen-btn-lg-min-width);
+  --btn-icon-size: var(--dimen-btn-lg-icon-size);
+  --btn-text-px: var(--dimen-btn-lg-px-text);
+}
+
+
 
 .btn--filled-primary {
   background-color: var(--color-primary);
@@ -59,18 +85,19 @@
   border-radius: 50%;
   border-style: solid;
 
-  width: var(--btn-loader-size);
-  height: var(--btn-loader-size);
+  width: var(--btn-icon-size);
+  height: var(--btn-icon-size);
   border-width: 2px;
 
   border-top-color: transparent;
-  border-right-color: var(--btn-loader-color);
-  border-bottom-color: var(--btn-loader-color);
-  border-left-color: var(--btn-loader-color);
+  border-right-color: currentColor;
+  border-bottom-color: currentColor;
+  border-left-color: currentColor;
 }
 
 .btn__content {
   display: inline-flex;
+  padding: 0 var(--btn-text-px);
 }
 
 .btn--outlined {

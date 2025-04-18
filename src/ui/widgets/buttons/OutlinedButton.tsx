@@ -12,7 +12,7 @@ interface OutlinedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
 }
 
 export const OutlinedButton: React.FC<OutlinedButtonProps> = ({
-    size = 'medium',
+    size = 'md',
     theme = 'neutral',
     disabled = false,
     loading = false,
@@ -27,7 +27,7 @@ export const OutlinedButton: React.FC<OutlinedButtonProps> = ({
         'btn--outlined',
         `btn--outlined-${theme}`,
         `btn--${size}`,
-        'shadow-sm',
+        'shadow-xs',
         {
             'btn--disabled': isDisabled,
             'btn--loading': loading,

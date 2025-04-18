@@ -53,6 +53,13 @@ const Header = ({ onClose }: { onClose: VoidFunction }) => (
 const SearchBar = observer(() => {
     const store = useSelectFormDialogStore();
     return (<div className="px-4 py-3 border-b border-dialog-divider">
-        <SearchInput inputSize="md" value={store.searchQuery} onChange={(e) => store.onSearchQueryChange(e.target.value)} />
+        <SearchInput
+            className="w-full"
+            placeholder="Search assessments"
+            inputSize="sm"
+            value={store.searchQuery}
+            onChange={(e) => store.onSearchQueryChange(e.target.value)}
+            onClear={() => store.onSearchQueryChange("")}
+        />
     </div>);
 });

@@ -6,6 +6,7 @@ import AdminApiClient from "@/data/sources/AdminApiClient";
 import { AdminFormDetail } from "@/domain/models/admin/forms/AdminFormDetail";
 import AdminFormService from "@/domain/services/admin/AdminFormsService";
 import { DataState } from "@/ui/utils/datastate";
+import { withMinimumDelay } from "@/ui/utils/withMinimumDelay";
 import { makeAutoObservable, observable, runInAction } from "mobx";
 
 export class AdminFormStore {
@@ -29,8 +30,9 @@ export class AdminFormStore {
     async loadFormDetail() {
         try {
             runInAction(() => this.formState = DataState.loading());
-            let response = (await this.adminFormsService.getAdminFormDetailByPermalink(this.permalink)).getOrThrow();
-            runInAction(() => this.formState = DataState.success(response));
+            const response = await withMinimumDelay(this.adminFormsService.getAdminFormDetailByPermalink(this.permalink));
+            const data = response.getOrThrow();
+            runInAction(() => this.formState = DataState.success(data));
         }
         catch (error) {
             const e = AppException.fromAny(error);
