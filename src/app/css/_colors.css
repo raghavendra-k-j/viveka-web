@@ -29,6 +29,36 @@
 .bg-surface {
   background-color: var(--color-surface);
 }
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
 .bg-primary-subtle {
   background-color: var(--color-primary-bg-subtle);
+}
+
+.text-success {
+  color: var(--color-success);
+}
+.text-danger {
+  color: var(--color-danger);
+}
+
+.bg-success {
+  background-color: var(--color-success);
+}
+.bg-success-subtle {
+  background-color: var(--color-success-bg-subtle);
+}
+.bg-danger {
+  background-color: var(--color-danger);
+}
+.bg-danger-subtle {
+  background-color: var(--color-danger-bg-subtle);
+}
+
+
+.ring-primary {
+  --tw-ring-color: var(--color-primary);
 }

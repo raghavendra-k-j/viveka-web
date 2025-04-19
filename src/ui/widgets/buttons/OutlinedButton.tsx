@@ -1,3 +1,4 @@
+import { ElementType } from "react";
 import { ButtonSize } from "./ButtonSize";
 import clsx from "clsx";
 
@@ -9,6 +10,7 @@ interface OutlinedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
     disabled?: boolean;
     loading?: boolean;
     children?: React.ReactNode;
+    as?: ElementType; 
 }
 
 export const OutlinedButton: React.FC<OutlinedButtonProps> = ({
@@ -18,6 +20,7 @@ export const OutlinedButton: React.FC<OutlinedButtonProps> = ({
     loading = false,
     children,
     className = '',
+    as: Component = 'button',
     ...rest
 }) => {
     const isDisabled = disabled || loading;
@@ -36,11 +39,11 @@ export const OutlinedButton: React.FC<OutlinedButtonProps> = ({
     );
 
     return (
-        <button className={classes} disabled={isDisabled} {...rest}>
+        <Component className={classes} disabled={isDisabled} {...rest}>
             {loading && (
                 <span className="btn__loader"></span>
             )}
             <span className="btn__content">{children}</span>
-        </button>
+        </Component>
     );
 };

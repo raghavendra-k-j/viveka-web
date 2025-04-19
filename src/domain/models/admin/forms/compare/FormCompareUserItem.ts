@@ -1,6 +1,7 @@
 import { JSONParams } from "@/core/types/JSONParams";
 import { GuestBase } from "@/domain/models/commons/user/GuestBase";
 import { UserBase } from "@/domain/models/commons/user/UserBase";
+import { NumChangeMetric } from "@/domain/utils/NumberChangeMetric";
 
 type FormCompareUserItemDetailProps = {
     marks: number;
@@ -48,6 +49,9 @@ export class FormCompareUserItem {
     formA: FormCompareUserItemDetail;
     formB: FormCompareUserItemDetail;
     participantKey: string;
+    marksChange: NumChangeMetric;
+    percentageChange: NumChangeMetric;
+    timeTakenChange: NumChangeMetric;
 
 
     constructor(props: FormCompareUserItemProps) {
@@ -57,6 +61,10 @@ export class FormCompareUserItem {
         this.formA = props.formA;
         this.formB = props.formB;
         this.participantKey = props.userTile ? String(props.userTile.id) : "guest_" + String(props.guestTile!.id);
+
+        this.marksChange = NumChangeMetric.calculateChange(props.formA.marks, props.formB.marks);
+        this.percentageChange = NumChangeMetric.calculateChange(props.formA.percentage, props.formB.percentage);
+        this.timeTakenChange = NumChangeMetric.calculateChange(props.formA.timeTaken, props.formB.timeTaken);
     }
 
     static fromJson(json: JSONParams): FormCompareUserItem {

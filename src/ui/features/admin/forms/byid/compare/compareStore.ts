@@ -18,11 +18,11 @@ export class CompareStore {
     searchQuery: string = "";
 
     get formA(): FormCompareDetail {
-        return this.formCompareDetails.item.formA;
+        return this.formCompareDetails.base.formA;
     }
 
     get formB(): FormCompareDetail {
-        return this.formCompareDetails.item.formB;
+        return this.formCompareDetails.base.formB;
     }
 
     onSearchQueryChange(value: string): void {

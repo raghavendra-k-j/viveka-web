@@ -11,3 +11,20 @@
 .table-bordered td {
   border: 1px solid var(--color-gray-200);
 }
+
+.table-bordered-h {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table-bordered-h th,
+.table-bordered-h td {
+  border-top: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid var(--color-gray-200);
+  border-left: none;
+  border-right: none;
+}
+
+.table-header-bordered th {
+  border: 1px solid var(--color-gray-200);
+}

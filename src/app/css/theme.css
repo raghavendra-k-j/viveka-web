@@ -73,6 +73,12 @@
   --dimen-btn-lg-px-text: 2px;
   --dimen-btn-lg-font-size: 14px;
   --dimen-btn-lg-icon-size: 20px;
+  --dimen-checkbox-radius: 6px;
+  --dimen-checkbox-inner-radius: 5px;
+  --dimen-checkbox-sm-size: 20px;
+  --dimen-checkbox-sm-p: 1px;
+  --dimen-checkbox-md-size: 24px;
+  --dimen-checkbox-md-p: 2px;
   --dimen-input-font-weight: 400;
   --dimen-input-radius: 6px;
   --dimen-input-sm-min-height: 36px;
@@ -93,4 +99,5 @@
   --dimen-input-lg-gap: 8px;
   --dimen-input-lg-font-size: 16px;
   --dimen-input-lg-icon-size: 20px;
+  --dimen-popover-radius: 6px;
 }

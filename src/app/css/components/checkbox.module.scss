@@ -1,0 +1,65 @@
+.CheckboxRoot {
+  background-color: var(--color-surface);
+  border-radius: var(--dimen-checkbox-radius);
+  border: 1px solid var(--color-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-xs);
+  padding: 1.5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px var(--color-primary);
+  }
+
+  &--sm {
+    width: var(--dimen-checkbox-sm-size);
+    height: var(--dimen-checkbox-sm-size);
+  }
+
+  &--md {
+    width: var(--dimen-checkbox-md-size);
+    height: var(--dimen-checkbox-md-size);
+  }
+
+  &[data-state="checked"] {
+    box-shadow: 0 0 0 1px var(--color-primary);
+  }
+
+  &[data-state="unchecked"],
+  &[data-state="indeterminate"] {
+    border-color: var(--color-border-strong);
+  }
+
+  &[data-disabled] {
+    cursor: not-allowed;
+  }
+}
+
+.CheckboxIndicator {
+  color: var(--color-on-primary);
+  background-color: var(--color-surface);
+  border-radius: var(--dimen-checkbox-inner-radius);
+  padding: var(--checkbox-icon-padding);
+  border: 1px solid var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  .CheckboxRoot[data-state="checked"] & {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+}
+
+.Icon {
+  width: 100%;
+  height: 100%;
+}

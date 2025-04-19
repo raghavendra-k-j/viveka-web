@@ -67,7 +67,7 @@ export const ComparisonOverviewTable = ({ overview }: ComparisonOverviewTablePro
 
 
     return (
-        <div className="overflow-hidden">
+        <div className="overflow-x-auto w-full">
             <table className="min-w-full table-bordered border-collapse">
                 <thead className="table-head">
                     <tr>
@@ -83,21 +83,18 @@ export const ComparisonOverviewTable = ({ overview }: ComparisonOverviewTablePro
                         formAValue={`${NumberDisplayUtil.formatDecimal({ number: (overview.formA.avgPercent), roundTo: 2 })}% (${NumberDisplayUtil.formatDecimal({ number: overview.formA.avgMarks, roundTo: 2 })}/${NumberDisplayUtil.formatDecimal({ number: formDetails.formA.totalMarks, roundTo: 2 })})`}
                         formBValue={`${NumberDisplayUtil.formatDecimal({ number: (overview.formB.avgPercent), roundTo: 2 })}% (${NumberDisplayUtil.formatDecimal({ number: overview.formB.avgMarks, roundTo: 2 })}/${NumberDisplayUtil.formatDecimal({ number: formDetails.formB.totalMarks, roundTo: 2 })})`}
                         diff={getPercentageDiffText()}
-                        changeStatus={overview.avgPercentChange.status}
                     />
                     <ComparisonRow
                         label="Average Time Taken"
                         formAValue={TimeDisplayUtil.formatSeconds(overview.formA.avgTime)}
                         formBValue={TimeDisplayUtil.formatSeconds(overview.formB.avgTime)}
                         diff={getAverageTimeDiffText()}
-                        changeStatus={overview.avgTimeChange.status}
                     />
                     <ComparisonRow
                         label="Pass Rate"
                         formAValue={overview.formA.passRate != null ? `${NumberDisplayUtil.formatDecimal({ number: overview.formA.passRate, roundTo: 2 })}%` : "-"}
                         formBValue={overview.formB.passRate != null ? `${NumberDisplayUtil.formatDecimal({ number: overview.formB.passRate, roundTo: 2 })}%` : "-"}
                         diff={getPassRateDiffText()}
-                        changeStatus={overview.passRateChange?.status}
                     />
                 </tbody>
             </table>
@@ -128,7 +125,7 @@ type TableCellProps = {
 
 const TableCell = ({ children, className, isLabel }: TableCellProps) => {
     return (
-        <td className={clsx(isLabel ? 'fw-medium' : 'fw-regular', 'px-3 py-2 fs-md-m text-content-primary', className)}>
+        <td className={clsx(isLabel ? 'font-medium' : 'font-regular', 'px-3 py-2 fs-md-m text-content-primary', className)}>
             {children}
         </td>
     );
@@ -139,7 +136,6 @@ type ComparisonRowProps = {
     formAValue: string | number;
     formBValue: string | number;
     diff: ReactNode;
-    changeStatus?: NumMetricChangeStatus;
 };
 
 const ComparisonRow = (props: ComparisonRowProps) => {
@@ -148,9 +144,7 @@ const ComparisonRow = (props: ComparisonRowProps) => {
             <TableCell isLabel>{props.label}</TableCell>
             <TableCell className="text-left">{props.formAValue}</TableCell>
             <TableCell className="text-left">{props.formBValue}</TableCell>
-            <TableCell className="text-left">
-                {props.diff}
-            </TableCell>
+            <TableCell className="text-left">{props.diff}</TableCell>
         </tr>
     );
 };

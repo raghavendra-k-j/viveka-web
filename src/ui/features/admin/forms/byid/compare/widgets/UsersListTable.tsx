@@ -5,48 +5,36 @@ import { FilledButton } from "@/ui/widgets/buttons/FilledButton";
 import { Pagination } from "@/app/theme/Pagination";
 import { useAdminFormCompareStore } from "../storeCtx";
 import { NumberDisplayUtil } from "@/domain/utils/NumberDisplayUtil";
-import { AvatarColorUtil } from "@/domain/utils/AvatarColorUtil";
+import { TimeDisplayUtil } from "@/domain/utils/TimeDisplayUtil";
+import { UserTileItem } from "./UserRow";
 import { FormCompareDetailsVm, FormCompareUserItemVm } from "../Models";
+import { MoveUp, MoveDown } from "lucide-react";
+import { ReactNode } from "react";
+
 
 
 const UsersListTable = observer(() => {
     const store = useAdminFormCompareStore();
 
     if (store.usersState.isError) {
-        const e = store.usersState.error!;
-        return (
-            <AppErrorView
-                className="p-6"
-                message={e.message}
-                description={e.description}
-                actions={[
-                    <FilledButton key="retry" onClick={() => store.getComparisonUserList({})}>Retry</FilledButton>
-                ]}
-            />
-        );
+        return <TableErrorView />;
     }
 
-    if (store.usersState.isSuccess) {
-        return <MainContent />;
+    if (!store.usersState.isSuccess) {
+        return <CenteredLoader />;
     }
 
-    return (
-        <UsersListCenteredContent>
-            <Loader />
-        </UsersListCenteredContent>
-    );
+    return <UsersTableContent />;
 });
 
 export default UsersListTable;
 
 
 
-const MainContent = () => {
+const UsersTableContent = observer(() => {
     const store = useAdminFormCompareStore();
-    const { compareFormDetails } = store;
+    const { compareFormDetails, userTableOptions, usersData } = store;
     const { formALabel, formBLabel } = compareFormDetails;
-
-    const usersData = store.usersData;
     const users = usersData.items;
     const pageInfo = usersData.pageInfo;
 
@@ -59,37 +47,21 @@ const MainContent = () => {
     return (
         <div>
             <div className="overflow-x-auto">
-                <table className="min-w-full table table-bordered">
-                    <thead className="table-head border-b border-light">
-                        <tr className="border-b border-light">
-                            <TableHeaderCell rowSpan={2}>User</TableHeaderCell>
-                            <TableHeaderCell align="center" colSpan={3}>Marks</TableHeaderCell>
-                            <TableHeaderCell align="center" colSpan={2}>Result</TableHeaderCell>
-                        </tr>
-                        <tr className="border-b border-light">
-                            <TableHeaderCell>{formALabel}</TableHeaderCell>
-                            <TableHeaderCell>{formBLabel}</TableHeaderCell>
-                            <TableHeaderCell>Change</TableHeaderCell>
-                            <TableHeaderCell>{formALabel}</TableHeaderCell>
-                            <TableHeaderCell>{formBLabel}</TableHeaderCell>
-                        </tr>
-                    </thead>
-
-                    <tbody className="bg-white divide-y divide-gray-200">
+                <table className="min-w-full table table-bordered-h">
+                    <TableHeader formALabel={formALabel} formBLabel={formBLabel} options={userTableOptions} />
+                    <tbody>
                         {users.length > 0 ? (
-                            users.map((user, index) => (
+                            users.map((user) => (
                                 <UserRow
                                     key={user.base.participantKey}
                                     item={user}
                                     compareFormDetails={compareFormDetails}
+                                    showStatus={userTableOptions.showPassStatusColumn}
+                                    showTime={userTableOptions.showTimeTakenColumn}
                                 />
                             ))
                         ) : (
-                            <tr>
-                                <td colSpan={7} className="text-center text-gray-500 py-4 px-4">
-                                    No users found matching your criteria.
-                                </td>
-                            </tr>
+                            <TableEmptyRow colSpan={7} />
                         )}
                     </tbody>
                 </table>
@@ -107,60 +79,150 @@ const MainContent = () => {
             </div>
         </div>
     );
-};
+});
 
-// 4. User Row
-const UserRow = ({ item, compareFormDetails }: { item: FormCompareUserItemVm, compareFormDetails: FormCompareDetailsVm }) => {
+
+
+const TableHeader = ({
+    formALabel,
+    formBLabel,
+    options,
+}: {
+    formALabel: string;
+    formBLabel: string;
+    options: { showPassStatusColumn: boolean; showTimeTakenColumn: boolean };
+}) => (
+    <thead className="table-head table-header-bordered">
+        <tr>
+            <TableHeaderCell rowSpan={2}>User</TableHeaderCell>
+            <TableHeaderCell align="center" colSpan={3}>Marks</TableHeaderCell>
+            {options.showPassStatusColumn && <TableHeaderCell align="center" colSpan={2}>Result</TableHeaderCell>}
+            {options.showTimeTakenColumn && <TableHeaderCell align="center" colSpan={3}>Time Taken</TableHeaderCell>}
+        </tr>
+        <tr>
+            <TableHeaderCell>{formALabel}</TableHeaderCell>
+            <TableHeaderCell>{formBLabel}</TableHeaderCell>
+            <TableHeaderCell>Change</TableHeaderCell>
+            {options.showPassStatusColumn && (
+                <>
+                    <TableHeaderCell>{formALabel}</TableHeaderCell>
+                    <TableHeaderCell>{formBLabel}</TableHeaderCell>
+                </>
+            )}
+            {options.showTimeTakenColumn && (
+                <>
+                    <TableHeaderCell>{formALabel}</TableHeaderCell>
+                    <TableHeaderCell>{formBLabel}</TableHeaderCell>
+                    <TableHeaderCell>Change</TableHeaderCell>
+                </>
+            )}
+        </tr>
+    </thead>
+);
+
+
+
+const UserRow = ({
+    item,
+    compareFormDetails,
+    showStatus,
+    showTime,
+}: {
+    item: FormCompareUserItemVm;
+    compareFormDetails: FormCompareDetailsVm;
+    showStatus: boolean;
+    showTime: boolean;
+}) => {
     const renderStatusBadge = (passed?: boolean) => {
         if (passed === true) {
-            return <span className="fs-sm fw-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">Pass</span>;
+            return <StatusBadge text="Pass" color="green" />;
         } else if (passed === false) {
-            return <span className="fs-sm fw-medium text-red-700 bg-red-100 px-2 py-0.5 rounded-full">Fail</span>;
+            return <StatusBadge text="Fail" color="red" />;
         } else {
-            return <span className="fs-sm fw-medium text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">N/A</span>;
+            return <StatusBadge text="N/A" color="gray" />;
         }
+    };
+
+    const renderMarksChange = () => {
+        let changeText: string;
+        let iconClassName: string;
+        let iconElement: ReactNode;
+
+        let formattedPercentage = NumberDisplayUtil.formatDecimal({ number: Math.abs(item.marksChange.value), roundTo: 2 });
+        let marksChange = NumberDisplayUtil.formatDecimal({ number: Math.abs(item.marksChange.value), roundTo: 2 });
+        if (item.marksChange.isIncrease) {
+            changeText = compareFormDetails.isSameTotalMarks ? `${formattedPercentage}% (+${marksChange})` : `${formattedPercentage}%`;
+            iconClassName = "text-emerald-600";
+            iconElement = <MoveUp size={14} className="inline ml-1" />;
+        } else if (item.marksChange.isDecrease) {
+            changeText = compareFormDetails.isSameTotalMarks ? `${formattedPercentage}% (-${marksChange})` : `${formattedPercentage}%`;
+            iconClassName = "text-red-600";
+            iconElement = <MoveDown size={14} className="inline ml-1" />;
+        } else {
+            changeText = "No Change";
+            iconClassName = "text-content-primary";
+            iconElement = null;
+        }
+
+        return (
+            <span className={`fs-md-m text-content-primary`}>
+                {changeText}
+                <span className={iconClassName}>{iconElement}</span>
+            </span>
+        );
     };
 
     return (
         <tr>
-            <TableDataCell><UserTileItem user={item.base.userTile ?? item.base.guestTile!} /></TableDataCell>
-            <TableDataCell align="right">
-                {NumberDisplayUtil.formatDecimal({ number: item.base.formA.percentage, roundTo: 2 })} %
-                ({NumberDisplayUtil.formatDecimal({ number: item.base.formA.marks, roundTo: 2 })}/{NumberDisplayUtil.formatDecimal({ number: compareFormDetails.formA.totalMarks, roundTo: 2 })})
+            <TableDataCell>
+                <UserTileItem user={item.base.userTile ?? item.base.guestTile!} />
             </TableDataCell>
-            <TableDataCell align="right">
-                {NumberDisplayUtil.formatDecimal({ number: item.base.formB.percentage, roundTo: 2 })} %
-                ({NumberDisplayUtil.formatDecimal({ number: item.base.formB.marks, roundTo: 2 })}/{NumberDisplayUtil.formatDecimal({ number: compareFormDetails.formB.totalMarks, roundTo: 2 })})
+            <TableDataCell>
+                {formatMarksColumn(
+                    item.base.formA.percentage,
+                    item.base.formA.marks,
+                    compareFormDetails.formA.totalMarks
+                )}
             </TableDataCell>
-            <TableDataCell align="right">
-                {NumberDisplayUtil.formatDecimal({ number: item.base.formA.percentage - item.base.formB.percentage, roundTo: 2 })} %
+
+            <TableDataCell>
+                {formatMarksColumn(
+                    item.base.formB.percentage,
+                    item.base.formB.marks,
+                    compareFormDetails.formB.totalMarks
+                )}
             </TableDataCell>
-            <TableDataCell align="center">{renderStatusBadge(item.base.formA.passed)}</TableDataCell>
-            <TableDataCell align="center">{renderStatusBadge(item.base.formB.passed)}</TableDataCell>
+            <TableDataCell>
+                {renderMarksChange()}
+            </TableDataCell>
+            {showStatus && (
+                <>
+                    <TableDataCell align="center">{renderStatusBadge(item.base.formA.passed)}</TableDataCell>
+                    <TableDataCell align="center">{renderStatusBadge(item.base.formB.passed)}</TableDataCell>
+                </>
+            )}
+            {showTime && (
+                <>
+                    <TableDataCell>{TimeDisplayUtil.formatSeconds(item.base.formA.timeTaken)}</TableDataCell>
+                    <TableDataCell>{TimeDisplayUtil.formatSeconds(item.base.formB.timeTaken)}</TableDataCell>
+                    <TableDataCell>
+                        {TimeDisplayUtil.formatSeconds(Math.abs(item.base.timeTakenChange.value))}
+                        {item.base.timeTakenChange.isIncrease ? (
+                            <span className="inline ml-1 text-red-600">Slower</span>
+                        ) : item.base.timeTakenChange.isDecrease ? (
+                            <span className="inline ml-1 text-emerald-600">Faster</span>
+                        ) : item.base.timeTakenChange.isNoChange ? (
+                            <span className="inline ml-1 text-gray-600">No Change</span>
+                        ) : null}
+                    </TableDataCell>
+                </>
+            )}
         </tr>
     );
 };
 
-// 5. User Tile
-const UserTileItem = ({ user }: { user: { name: string; email: string } }) => {
-    const colors = AvatarColorUtil.getAvatarColor(user.email);
-    const initial = user.name?.[0]?.toUpperCase() ?? "?";
 
-    return (
-        <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-sm"
-                style={{ backgroundColor: colors.bgColor, color: colors.textColor }}>
-                {initial}
-            </div>
-            <div className="space-y-0.5">
-                <div className="text-sm font-semibold text-gray-700">{user.name}</div>
-                <div className="text-xs text-gray-600">{user.email}</div>
-            </div>
-        </div>
-    );
-};
 
-// 6. Table Cell Components
 const TableHeaderCell = ({
     children,
     align = "left",
@@ -173,16 +235,12 @@ const TableHeaderCell = ({
     className?: string;
     colSpan?: number;
     rowSpan?: number;
-}) => {
-    const alignClass = `text-${align}`;
-    return (
-        <th colSpan={colSpan}
-            rowSpan={rowSpan}
-            className={`px-4 py-2 text-xs font-semibold text-content-primary uppercase whitespace-nowrap ${alignClass} ${className}`}>
-            {children}
-        </th>
-    );
-};
+}) => (
+    <th colSpan={colSpan} rowSpan={rowSpan}
+        className={`px-4 py-2 text-xs font-semibold text-content-primary uppercase whitespace-nowrap text-${align} ${className}`}>
+        {children}
+    </th>
+);
 
 const TableDataCell = ({
     children,
@@ -192,16 +250,64 @@ const TableDataCell = ({
     children: React.ReactNode;
     align?: "left" | "center" | "right";
     className?: string;
-}) => {
-    const alignClass = `text-${align}`;
+}) => (
+    <td className={`px-4 py-2.5 whitespace-nowrap fs-md-m text-content-primary text-${align} ${className}`}>
+        {children}
+    </td>
+);
+
+const StatusBadge = ({ text, color }: { text: string; color: "green" | "red" | "gray" }) => {
+    const colorMap = {
+        green: "text-emerald-700 bg-emerald-50",
+        red: "text-red-700 bg-red-50",
+        gray: "text-content-primary",
+    };
     return (
-        <td className={`px-4 py-2.5 whitespace-nowrap text-sm text-gray-800 ${alignClass} ${className}`}>
-            {children}
-        </td>
+        <span className={`fs-md-m font-medium px-2 py-0.5 rounded-full ${colorMap[color]}`}>
+            {text}
+        </span>
     );
 };
 
+const TableEmptyRow = ({ colSpan }: { colSpan: number }) => (
+    <tr>
+        <td colSpan={colSpan} className="text-center fs-md text-content-primary py-4 px-4">
+            No users found matching your criteria.
+        </td>
+    </tr>
+);
 
-const UsersListCenteredContent = ({ children }: { children: React.ReactNode }) => {
-    return <div className="flex flex-col justify-center items-center min-h-[200px]">{children}</div>;
+const TableErrorView = () => {
+    const store = useAdminFormCompareStore();
+    const e = store.usersState.error!;
+    return (
+        <AppErrorView
+            className="p-6"
+            message={e.message}
+            description={e.description}
+            actions={[
+                <FilledButton key="retry" onClick={() => store.getComparisonUserList({})}>
+                    Retry
+                </FilledButton>,
+            ]}
+        />
+    );
 };
+
+const CenteredLoader = () => (
+    <div className="flex flex-col justify-center items-center min-h-[200px]">
+        <Loader />
+    </div>
+);
+
+
+
+const formatMarksColumn = (
+    percentage: number,
+    marks: number,
+    totalMarks: number
+): string => {
+    return `${NumberDisplayUtil.formatDecimal({ number: percentage, roundTo: 2 })} % 
+(${NumberDisplayUtil.formatDecimal({ number: marks, roundTo: 2 })}/${NumberDisplayUtil.formatDecimal({ number: totalMarks, roundTo: 2 })})`;
+};
+

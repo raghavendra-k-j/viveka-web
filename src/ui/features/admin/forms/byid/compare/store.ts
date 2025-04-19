@@ -2,7 +2,7 @@
 
 import { AppException } from "@/core/exceptions/AppException";
 import { DataState } from "@/ui/utils/datastate";
-import { makeAutoObservable, observable, reaction, runInAction } from "mobx";
+import { action, makeAutoObservable, observable, reaction, runInAction } from "mobx";
 import { AdminFormStore } from "../store";
 import { ComparisonRecommendations } from "@/domain/models/admin/forms/compare/ComparisonRecommendations";
 import { debounce } from "lodash";
@@ -14,17 +14,48 @@ import { FormCompareDetails } from "@/domain/models/admin/forms/compare/FormComp
 import { FormCompareDetailsVm, FormCompareUserListVm } from "./Models";
 import { withMinimumDelay } from "@/ui/utils/withMinimumDelay";
 import { FormCompareUserList } from "@/domain/models/admin/forms/compare/FormCompareUserList";
+import { Logger } from "@/core/utils/logger";
+import { searchDebounce } from "@/ui/utils/searchDebounce";
 
 export enum CompareTabFragment {
     SELECT_FORM, RESULT_PAGE
 }
 
 
+export class UsersTableOption {
+    showPassStatusColumn: boolean;
+    showTimeTakenColumn: boolean;
+
+    constructor() {
+        this.showPassStatusColumn = false;
+        this.showTimeTakenColumn = false;
+        makeAutoObservable(this, {
+            showPassStatusColumn: observable,
+            showTimeTakenColumn: observable,
+        });
+    }
+
+    setShowPassStatusColumn = (value: boolean) => {
+        runInAction(() => {
+            this.showPassStatusColumn = value;
+        });
+    }
+
+    setShowTimeTakenColumn = (value: boolean) => {
+        runInAction(() => {
+            this.showTimeTakenColumn = value;
+        });
+    }
+}
+
+
 export class AdminFormCompareStore {
+    
     parentStore: AdminFormStore;
     recommendationsState = DataState.initial<ComparisonRecommendations>();
     currentFragment = CompareTabFragment.SELECT_FORM;
     compareStore?: CompareStore;
+    userTableOptions: UsersTableOption = new UsersTableOption();
 
 
     get compareFormDetails() {
@@ -40,6 +71,12 @@ export class AdminFormCompareStore {
         return this.compareStore!.overViewState;
     }
 
+
+    get overviewData() {
+        return this.compareStore!.overViewState.data!;
+    }
+
+
     get usersState() {
         return this.compareStore!.usersState;
     }
@@ -52,6 +89,8 @@ export class AdminFormCompareStore {
         return this.parentStore.formDetail;
     }
 
+
+
     constructor({ parentStore }: { parentStore: AdminFormStore }) {
         this.parentStore = parentStore;
         makeAutoObservable(this, {
@@ -60,18 +99,12 @@ export class AdminFormCompareStore {
             compareStore: observable,
         });
 
-        const debouncedFetchUsers = debounce(() => {
-            if (this.compareStore) {
-                this.getComparisonUserList({});
-            }
-        }, 300);
+        const debouncedFetchUsers = searchDebounce(() => {
+            if (!this.compareStore) return;
+            this.getComparisonUserList({});
+        });
 
-        reaction(
-            () => this.compareStore?.searchQuery,
-            () => {
-                return debouncedFetchUsers();
-            }
-        );
+        reaction(() => this.compareStore?.searchQuery, () => debouncedFetchUsers());
     }
 
     onFormSelected(form?: FormCompareDetailsVm) {
@@ -142,14 +175,14 @@ export class AdminFormCompareStore {
     async getComparisonUserList({ page = 1 }: { page?: number }) {
         if (!this.compareStore) return;
         runInAction(() => this.compareStore!.usersState = DataState.loading());
-        const req = new FormCompareUserListReq({ 
+        const req = new FormCompareUserListReq({
             formAId: this.compareStore.formA.id,
-            formBId: this.compareStore.formB.id, 
-            formALabel: "Pre-Traning", 
-            formBLabel: "Post-Training", 
-            page, 
-            pageSize: 10, 
-            searchQuery: this.compareStore.searchQuery, 
+            formBId: this.compareStore.formB.id,
+            formALabel: "Pre-Traning",
+            formBLabel: "Post-Training",
+            page,
+            pageSize: 10,
+            searchQuery: this.compareStore.searchQuery,
         });
         try {
             const res = await withMinimumDelay(this.parentStore.adminFormsService.getComparisonUserList(req));
@@ -159,6 +192,22 @@ export class AdminFormCompareStore {
             const e = AppException.fromAny(error);
             runInAction(() => this.compareStore!.usersState = DataState.error({ error: e }));
         }
+    }
+
+    updateFormBLabel(newLabel: string) {
+        if (!this.compareStore) return;
+        runInAction(() => {
+            this.compareFormDetails.formBLabel = newLabel;
+            this.getComparisonOverview();
+        });
+    }
+    
+    updateFormALabel(newLabel: string) {
+        if (!this.compareStore) return;
+        runInAction(() => {
+            this.compareFormDetails.formALabel = newLabel;
+            this.getComparisonOverview();
+        });
     }
 
     dispose() {
