@@ -23,10 +23,16 @@ export class FormCompareItemVm {
 
 
 export class FormCompareDetailsVm {
+   
     base: FormCompareDetails;
     formALabel: string;
     formBLabel: string;
     isSameTotalMarks : boolean;
+
+    reverse(): FormCompareDetailsVm {
+        let newBase = this.base.reverse();
+        return new FormCompareDetailsVm(newBase);
+    }
 
     get formA(): FormCompareDetail {
         return this.base.formA;

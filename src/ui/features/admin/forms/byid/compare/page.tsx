@@ -18,7 +18,7 @@ function AdminFormComparePage() {
 
     useEffect(() => {
         if (store.metaDatState.isInitial) {
-            store.queryComparisonRecommendations();
+            store.queryMetaData();
         }
     }, [store]);
 
@@ -31,7 +31,7 @@ function AdminFormComparePage() {
                     message={e.message}
                     description={e.description}
                     actions={[
-                        <FilledButton key="retry" onClick={() => store.queryComparisonRecommendations()}>
+                        <FilledButton key="retry" onClick={() => store.queryMetaData()}>
                             Retry
                         </FilledButton>
                     ]}

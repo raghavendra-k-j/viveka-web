@@ -2,6 +2,7 @@ import { JSONParams } from "@/core/types/JSONParams";
 import { FormCompareDetail } from "./FormCompareDetail";
 
 export class FormCompareDetails {
+
     formA: FormCompareDetail;
     formB: FormCompareDetail;
     formALabel: string;
@@ -20,6 +21,16 @@ export class FormCompareDetails {
         this.formALabel = params.formALabel;
         this.formBLabel = params.formBLabel;
         this.commonResponsesCount = params.commonResponsesCount;
+    }
+
+    reverse(): FormCompareDetails {
+        return new FormCompareDetails({
+            formA: this.formB,
+            formB: this.formA,
+            formALabel: this.formBLabel,
+            formBLabel: this.formALabel,
+            commonResponsesCount: this.commonResponsesCount,
+        });
     }
 
     static fromJson(json: JSONParams): FormCompareDetails {

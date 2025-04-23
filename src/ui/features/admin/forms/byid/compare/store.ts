@@ -14,6 +14,7 @@ import { FormCompareDetails } from "@/domain/models/admin/forms/compare/FormComp
 import { FormCompareDetailsVm, FormCompareUserListVm } from "./Models";
 import { withMinimumDelay } from "@/ui/utils/withMinimumDelay";
 import { searchDebounce } from "@/ui/utils/searchDebounce";
+import { Logger } from "@/core/utils/logger";
 
 export enum CompareTabFragment {
     SELECT_FORM, RESULT_PAGE
@@ -105,12 +106,21 @@ export class AdminFormCompareStore {
         reaction(() => this.compareStore?.searchQuery, () => debouncedFetchUsers());
     }
 
+
+    reverseComparision() {
+        // make a shallow copy of the FormCompareDetailsVm
+        const formCompareDetails = this.compareFormDetails.reverse();
+        this.onFormSelected(formCompareDetails);
+    }
+
     onFormSelected(form?: FormCompareDetailsVm) {
         if (!form) {
             this.currentFragment = CompareTabFragment.SELECT_FORM;
             this.compareStore = undefined;
             return;
         }
+
+        form = form.reverse();
 
         runInAction(() => {
             const debouncedFetchUsers = debounce(() => {
@@ -157,7 +167,7 @@ export class AdminFormCompareStore {
         }
     }
 
-    async queryComparisonRecommendations() {
+    async queryMetaData() {
         try {
             runInAction(() => this.metaDatState = DataState.loading());
             const response = await withMinimumDelay(this.parentStore.adminFormsService.queryComparisonRecommendations(this.parentStore.formDetail.id));
@@ -176,8 +186,8 @@ export class AdminFormCompareStore {
         const req = new FormCompareUserListReq({
             formAId: this.compareStore.formA.id,
             formBId: this.compareStore.formB.id,
-            formALabel: "Pre-Traning",
-            formBLabel: "Post-Training",
+            formALabel: this.compareStore.formCompareDetails.formALabel,
+            formBLabel: this.compareStore.formCompareDetails.formBLabel,
             page,
             pageSize: 10,
             searchQuery: this.compareStore.searchQuery,

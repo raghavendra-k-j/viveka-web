@@ -11,6 +11,7 @@ import {
 import { NumberDisplayUtil } from "@/domain/utils/NumberDisplayUtil";
 import { AdminFormCompareStore } from "../store";
 import { FormLabelView } from "./FormLabelView";
+import { OutlinedButton } from "@/ui/widgets/buttons/OutlinedButton";
 
 type FormMetaItemProps = {
     icon: React.ReactNode;
