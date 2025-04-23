@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { ComparisonOverviewTable } from "./OverviewTable";
 import { CompareOverviewCharts } from "./OverviewChart";
 import { motion } from "framer-motion";
+import { Logger } from "@/core/utils/logger";
 
 
 
@@ -33,7 +34,7 @@ const CompareOverviewSection = observer(() => {
         if (overviewState.isInitial) {
             store.getComparisonOverview();
         }
-    }, [overviewState]);
+    });
 
     if (overviewState.isLoading) {
         return (
@@ -72,7 +73,7 @@ const CompareOverviewSection = observer(() => {
     return (
         <CompareSectionCard>
             <TabGroup>
-                <div className="flex justify-between items-center px-3 py-2">
+                <div className="flex justify-between items-center px-3 py-2 bg-section-header">
                     <CompareSectionCardTitle className="mr-2">Overall Comparision Summary</CompareSectionCardTitle>
                     <TabList className="flex space-x-1">
                         <TabItem>Charts</TabItem>

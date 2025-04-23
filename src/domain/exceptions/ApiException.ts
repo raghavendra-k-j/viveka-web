@@ -55,24 +55,31 @@ export class ApiException extends AppException {
             const statusCode = errObj?.response?.status ?? null;
             const responseData: JSONParams = errObj?.response?.data ?? null;
 
+            // Check if both message and description are available
             if (responseData && typeof responseData === "object") {
-                return new ApiException({
-                    message: responseData.message || "Unknown API error",
-                    description: responseData.description ?? null,
-                    data: responseData.data ?? null,
-                    errorCode: responseData.errorCode ?? null,
-                    statusCode: statusCode,
-                });
+                const { message, description } = responseData;
+
+                // If both message and description are available, use them
+                if (message && description) {
+                    return new ApiException({
+                        message: message,
+                        description: description,
+                        data: responseData.data ?? null,
+                        errorCode: responseData.errorCode ?? null,
+                        statusCode: statusCode,
+                    });
+                }
             }
         }
 
-        // Fallback for unknown structures
+        // Fallback for unknown structures or missing message/description
         return new ApiException({
-            message: "An unknown API error occurred",
-            description: error instanceof Error ? error.message : null,
+            message: "Something went wrong",
+            description: "An unexpected error occurred. We couldn't process your request at the moment.",
             data: error,
             statusCode: null,
             errorCode: null,
         });
     }
+
 }

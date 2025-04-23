@@ -3,10 +3,14 @@ import SelectAssessmentDialog from "../SelectFormDialog/SelectFormDialog";
 import { useAdminFormCompareStore } from "../storeCtx";
 import { FilledButton } from "@/ui/widgets/buttons/FilledButton";
 import { FormCompareItem } from "@/domain/models/admin/forms/compare/FormCompareItem";
+import { FormCompareDetailsVm } from "../Models";
+import { OutlinedButton } from "@/ui/widgets/buttons/OutlinedButton";
+import { toast } from 'sonner';
+import { AppException } from "@/core/exceptions/AppException";
 
 export default function SelectFormTab() {
     const store = useAdminFormCompareStore();
-    const recommendations = store.recommendationRes.recommendedForms;
+    const recommendedForm = store.metaData.recommendedForm;
     const [dialogOpen, setDialogOpen] = useState(false);
 
     return (
@@ -17,33 +21,50 @@ export default function SelectFormTab() {
 
                 {/* Title and Description and Action Button */}
                 <div className="text-center mb-6">
-                    <h2 className="fs-lg font-semibold text-content-primary">Select another assessment to compare with this one</h2>
+                    <h2 className="fs-lg-m font-semibold text-content-primary">Compare Assessment Performance</h2>
                     <p className="fs-md text-content-secondary mt-1">
-                        Use this feature to analyze and compare marks, time taken, pass rates, and user progress between assessments. Click the button below to choose one.
+                        Choose another assessment to compare key metrics like scores, pass rates, and completion times to see how performance has evolved.
                     </p>
                     <FilledButton className="mt-6" theme="primary" onClick={() => setDialogOpen(true)}>
-                        Choose Assessment to Compare
+                        Select Assessment to Compare
                     </FilledButton>
                 </div>
-               
+
 
                 {/* Recommendations List */}
-                {recommendations.length > 0 && (
-                    <div className="w-full space-y-4">
-                        {recommendations.map((form, index) => (
-                            <RecommendationItem key={index} form={form} />
-                        ))}
-                    </div>
-                )}
-            </div>
+                {recommendedForm && (
+                    <>
+                        {/* "OR" Divider */}
+                        <div className="flex items-center my-2">
+                            <div className="flex-grow border-t border-default"></div>
+                            <span className="mx-4 text-content-secondary">OR</span>
+                            <div className="flex-grow border-t border-default"></div>
+                        </div>
 
-            {recommendations.length > 0 && (
-                <div className="w-full space-y-4">
-                    {recommendations.map((form, index) => (
-                        <RecommendationItem key={index} form={form} />
-                    ))}
-                </div>
-            )}
+                        <div>
+                            <h3 className="fs-md font-semibold text-content-primary mb-2">
+                                Compare with {recommendedForm.assessmentType!.name} Assessment
+                            </h3>
+                            <div className="w-full space-y-4">
+                                <RecommendationItem
+                                    form={recommendedForm}
+                                    onClick={async () => {
+                                        try {
+                                            let response = (await store.getFormCompareDetails({ formBId: recommendedForm.id })).getOrThrow();
+                                            store.onFormSelected(new FormCompareDetailsVm(response));
+                                        }
+                                        catch (e) {
+                                            let appException = e as AppException;
+                                            toast.error(appException.message);
+                                        }
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </>
+                )}
+
+            </div>
 
         </div>
     );
@@ -52,17 +73,39 @@ export default function SelectFormTab() {
 
 type RecommendationItemProps = {
     form: FormCompareItem;
+    onClick: (form: FormCompareItem) => void;
 };
 
-function RecommendationItem({ form }: RecommendationItemProps) {
+function RecommendationItem({ form, onClick }: RecommendationItemProps) {
     return (
-        <div className="border p-4 shadow hover:shadow-md transition">
-            <p className="font-semibold text-lg">{form.title}</p>
-            <p className="text-sm text-gray-600">
-                {form.totalResponses} responses • {form.totalQuestions} questions • {form.totalMarks} marks
-            </p>
+        <div
+            onClick={() => onClick(form)}
+            className="flex justify-between items-center border border-default p-4 shadow-sm bg-surface cursor-pointer rounded-sm"
+        >
+            <div>
+                {form.assessmentType && (<div>
+                    <span className="inline-flex bg-primary-subtle text-primary font-medium px-2 py-1 rounded-sm fs-sm-p">
+                        {form.assessmentType.name}
+                    </span>
+                </div>)}
+                <p className="font-semibold fs-md text-content-primary mt-1">{form.title}</p>
+                <p className="fs-sm-p text-content-secondary">
+                    {form.totalResponses} responses • {form.totalQuestions} questions • {form.totalMarks} marks
+                </p>
+            </div>
+
+            <OutlinedButton
+                size="sm"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClick(form);
+                }}
+            >
+                Select
+            </OutlinedButton>
         </div>
     );
 }
+
 
 

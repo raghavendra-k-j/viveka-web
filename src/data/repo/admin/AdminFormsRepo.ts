@@ -2,7 +2,7 @@ import { ResEither } from "@/core/utils/ResEither";
 import AdminApiClient from "@/data/sources/AdminApiClient";
 import { ApiException } from "@/domain/exceptions/ApiException";
 import { AdminFormDetail } from "@/domain/models/admin/forms/AdminFormDetail";
-import { ComparisonRecommendations } from "@/domain/models/admin/forms/compare/ComparisonRecommendations";
+import { FormCompareMetaData } from "@/domain/models/admin/forms/compare/FormCompareMetaData";
 import { QueryFormsToCompareReq } from "@/domain/models/admin/forms/compare/QueryFormsToCompareReq";
 import { QueryFormsToCompareRes } from "@/domain/models/admin/forms/compare/QueryFormsToCompareRes";
 import { FormComparisonOverviewReq } from "@/domain/models/admin/forms/compare/FormComparisonOverviewReq";
@@ -45,10 +45,10 @@ class AdminFormsRepo {
         }
     }
 
-    async queryComparisonRecommendations(formId: number): Promise<ResEither<ApiException, ComparisonRecommendations>> {
+    async queryComparisonRecommendations(formId: number): Promise<ResEither<ApiException, FormCompareMetaData>> {
         try {
-            const response = await this.adminApiClient.getAxios().get(`/api/v1/admin/forms/${formId}/compare/recommendations`);
-            const data = ComparisonRecommendations.fromJson(response.data);
+            const response = await this.adminApiClient.getAxios().get(`/api/v1/admin/forms/${formId}/compare/metadata`);
+            const data = FormCompareMetaData.fromJson(response.data);
             return ResEither.success(data);
         } catch (e) {
             const error = ApiException.fromApiError(e);

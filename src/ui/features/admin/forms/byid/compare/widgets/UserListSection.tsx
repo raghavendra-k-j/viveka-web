@@ -36,7 +36,7 @@ const SectionHeader = () => {
     const store = useAdminFormCompareStore();
 
     return (
-        <div className="flex flex-row justify-between items-center gap-3 px-3 py-2">
+        <div className="flex flex-row justify-between items-center gap-3 px-3 py-2 bg-section-header">
             <CompareSectionCardTitle>User-wise Metrics</CompareSectionCardTitle>
             <div className="flex items-center space-x-2">
                 <SearchInputField store={store} />

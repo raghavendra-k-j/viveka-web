@@ -2,7 +2,7 @@ import { AppException } from "@/core/exceptions/AppException";
 import { ResEither } from "@/core/utils/ResEither";
 import AdminFormsRepo from "@/data/repo/admin/AdminFormsRepo";
 import { AdminFormDetail } from "@/domain/models/admin/forms/AdminFormDetail";
-import { ComparisonRecommendations } from "@/domain/models/admin/forms/compare/ComparisonRecommendations";
+import { FormCompareMetaData } from "@/domain/models/admin/forms/compare/FormCompareMetaData";
 import { FormCompareDetails } from "@/domain/models/admin/forms/compare/FormCompareDetails";
 import { FormCompareUserList } from "@/domain/models/admin/forms/compare/FormCompareUserList";
 import { FormCompareUserListReq } from "@/domain/models/admin/forms/compare/FormCompareUserListReq";
@@ -27,7 +27,7 @@ class AdminFormService {
         return await this.adminFormsRepo.getAdminFormDetailByPermalink(permalink);
     }
 
-    async queryComparisonRecommendations(formId: number): Promise<ResEither<AppException, ComparisonRecommendations>> {
+    async queryComparisonRecommendations(formId: number): Promise<ResEither<AppException, FormCompareMetaData>> {
         return await this.adminFormsRepo.queryComparisonRecommendations(formId);
     }
 

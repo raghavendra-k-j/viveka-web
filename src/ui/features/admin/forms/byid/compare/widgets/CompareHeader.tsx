@@ -6,7 +6,6 @@ import {
     ListChecks,
     Users,
     ShieldCheck,
-    Edit,
     MoveUp,
 } from "lucide-react";
 import { NumberDisplayUtil } from "@/domain/utils/NumberDisplayUtil";
@@ -60,11 +59,9 @@ export function ImprovementCircle({ store }: ImprovementCircleProps) {
                     ? "1 Matching User"
                     : `${compareFormDetails.base.commonResponsesCount} Matching Users`}
             </p>
-
             <p className={`fs-lg font-bold ${textClass}`}>
-                <span className="flex items-center">{sign}{Math.abs(rawValue)}% {icon}</span>
+                <span className="flex items-center">{sign}{NumberDisplayUtil.formatDecimal({ number: Math.abs(rawValue), roundTo: 2 })}% {icon}</span>
             </p>
-
             <p className="fs-sm-p text-content-secondary px-2">
                 Avg Percentage
             </p>
@@ -117,10 +114,10 @@ function FormBlock(props: FormBlockProps) {
                 label={props.label}
                 onLabelChange={props.onLabelChange}
             />
-            <p className="fs-lg font-semibold text-content-primary overflow-hidden text-ellipsis line-clamp-2">
+            <p className="fs-md-p font-semibold text-content-primary overflow-hidden text-ellipsis line-clamp-2">
                 {props.form.title}
             </p>
-            <div className="fs-md text-content-secondary font-medium space-y-1">
+            <div className="fs-md text-content-secondary font-medium grid grid-cols-2 gap-x-4 gap-y-2">
                 {metaItems.map((item, idx) => (
                     <FormMetaItem key={idx} {...item} />
                 ))}
@@ -162,8 +159,3 @@ export function CompareHeader() {
         </div>
     );
 }
-
-type FormLabelViewProps = {
-    label: React.ReactNode;
-    onEditClick: () => void;
-};

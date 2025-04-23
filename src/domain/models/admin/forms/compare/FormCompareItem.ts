@@ -10,7 +10,7 @@ type FormCompareItemProps = {
     createdAt: Date;
     startDate: Date;
     endDate: Date;
-    assessmentType: AssessmentType;
+    assessmentType?: AssessmentType;
     totalQuestions: number;
     totalMarks: number;
     totalResponses: number;
@@ -24,7 +24,7 @@ export class FormCompareItem {
     createdAt: Date;
     startDate: Date;
     endDate: Date;
-    assessmentType: AssessmentType;
+    assessmentType?: AssessmentType;
     totalQuestions: number;
     totalMarks: number;
     totalResponses: number;
@@ -52,7 +52,7 @@ export class FormCompareItem {
             createdAt: new Date(json.createdAt),
             startDate: new Date(json.startDate),
             endDate: new Date(json.endDate),
-            assessmentType: AssessmentType.fromType(json.assessmentType)!,
+            assessmentType: AssessmentType.fromType(json.assessmentType) ?? undefined,
             totalQuestions: json.totalQuestions,
             totalMarks: json.totalMarks,
             totalResponses: json.totalResponses,

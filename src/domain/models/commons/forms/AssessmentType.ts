@@ -6,12 +6,12 @@ type AssessmentTypeParams = {
 export class AssessmentType {
 
     static preTraining = new AssessmentType({
-        type: "Pre-Training",
+        type: "PRE_TRAINING",
         name: "Pre-Training",
     });
 
     static postTraining = new AssessmentType({
-        type: "Post-Training",
+        type: "POST_TRAINING",
         name: "Post-Training",
     });
 

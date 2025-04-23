@@ -14,10 +14,10 @@ import { FilledButton } from "@/ui/widgets/buttons/FilledButton";
 
 function AdminFormComparePage() {
     const store = useAdminFormCompareStore();
-    const recommendationsState = store.recommendationsState;
+    const recommendationsState = store.metaDatState;
 
     useEffect(() => {
-        if (store.recommendationsState.isInitial) {
+        if (store.metaDatState.isInitial) {
             store.queryComparisonRecommendations();
         }
     }, [store]);

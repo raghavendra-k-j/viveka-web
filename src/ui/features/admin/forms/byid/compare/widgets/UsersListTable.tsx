@@ -148,7 +148,7 @@ const UserRow = ({
         let iconClassName: string;
         let iconElement: ReactNode;
 
-        let formattedPercentage = NumberDisplayUtil.formatDecimal({ number: Math.abs(item.marksChange.value), roundTo: 2 });
+        let formattedPercentage = NumberDisplayUtil.formatDecimal({ number: Math.abs(item.base.percentageChange.value), roundTo: 2 });
         let marksChange = NumberDisplayUtil.formatDecimal({ number: Math.abs(item.marksChange.value), roundTo: 2 });
         if (item.marksChange.isIncrease) {
             changeText = compareFormDetails.isSameTotalMarks ? `${formattedPercentage}% (+${marksChange})` : `${formattedPercentage}%`;

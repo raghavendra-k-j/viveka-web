@@ -39,8 +39,8 @@ export class FormCompareDetailsVm {
 
     constructor(item: FormCompareDetails) {
         this.base = item;
-        this.formALabel = "Assessment A";
-        this.formBLabel = "Assessment B";
+        this.formALabel = this.base.formALabel;
+        this.formBLabel = this.base.formBLabel;
         this.isSameTotalMarks = item.formA.totalMarks == item.formB.totalMarks;
         makeObservable(this, {
             formALabel: observable,

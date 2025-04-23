@@ -9,6 +9,7 @@ import { QueryFormsToCompareResVm } from "./Models";
 import { FormCompareDetailsVm, FormCompareItemVm } from "../Models";
 import { withMinimumDelay } from "@/ui/utils/withMinimumDelay";
 import { searchDebounce } from "@/ui/utils/searchDebounce";
+import { toast } from "sonner";
 
 export class SelectFormDialogStore {
 
@@ -94,19 +95,36 @@ export class SelectFormDialogStore {
 
     async onFormSelected(item: FormCompareItemVm): Promise<void> {
         if (this.selectedForm === item) {
+            if (item.detailState.isError && item.detailState.error) {
+                this.showErrorToast(item.detailState.error);
+            }
             return;
         }
+
         this.selectedForm = item;
+
         try {
             runInAction(() => item.detailState = DataState.loading());
-            let data = (await this.parentStore.getFormCompareDetails({ formBId: item.item.id })).getOrThrow();
+            const data = (await this.parentStore.getFormCompareDetails({ formBId: item.item.id })).getOrThrow();
             runInAction(() => item.detailState = DataState.success(data));
             this.parentStore.onFormSelected(new FormCompareDetailsVm(data));
-        }
-        catch (error) {
+        } catch (error) {
             const e = AppException.fromAny(error);
-            runInAction(() => (this.loadState = DataState.error({ error: e })));
+            runInAction(() => item.detailState = DataState.error({ error: e }));
+            this.showErrorToast(e);
         }
+    }
+
+    showErrorToast(e: AppException) {
+        toast.error(e.message, {
+            dismissible: true,
+            duration: 3000,
+            description: e.description,
+            action: {
+                label: 'OK',
+                onClick: () => toast.dismiss(),
+            },
+        });
     }
 
 

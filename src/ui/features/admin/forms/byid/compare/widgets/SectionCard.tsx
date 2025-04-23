@@ -8,7 +8,7 @@ interface CompareCardProps extends React.HTMLAttributes<HTMLDivElement> {
 const CompareSectionCard = (props: CompareCardProps) => {
     const { children, className, ...rest } = props;
     return (
-        <div className={`border border-light bg-surface shadow-sm ${className ?? ''}`} {...rest}>
+        <div className={`border border-default bg-surface shadow-sm ${className ?? ''}`} {...rest}>
             {children}
         </div>
     );
@@ -22,7 +22,7 @@ type CompareSectionCardTitleProps = {
 
 const CompareSectionCardTitle = ({ children, className }: CompareSectionCardTitleProps) => {
     return (
-        <h2 className={clsx("fs-md-p font-semibold text-content-primary", className)}>
+        <h2 className={clsx("fs-md font-bold text-content-primary", className)}>
             {children}
         </h2>
     );

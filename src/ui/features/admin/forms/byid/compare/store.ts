@@ -4,7 +4,7 @@ import { AppException } from "@/core/exceptions/AppException";
 import { DataState } from "@/ui/utils/datastate";
 import { action, makeAutoObservable, observable, reaction, runInAction } from "mobx";
 import { AdminFormStore } from "../store";
-import { ComparisonRecommendations } from "@/domain/models/admin/forms/compare/ComparisonRecommendations";
+import { FormCompareMetaData } from "@/domain/models/admin/forms/compare/FormCompareMetaData";
 import { debounce } from "lodash";
 import { CompareStore } from "./compareStore";
 import { FormCompareUserListReq } from "@/domain/models/admin/forms/compare/FormCompareUserListReq";
@@ -13,8 +13,6 @@ import { ResEither } from "@/core/utils/ResEither";
 import { FormCompareDetails } from "@/domain/models/admin/forms/compare/FormCompareDetails";
 import { FormCompareDetailsVm, FormCompareUserListVm } from "./Models";
 import { withMinimumDelay } from "@/ui/utils/withMinimumDelay";
-import { FormCompareUserList } from "@/domain/models/admin/forms/compare/FormCompareUserList";
-import { Logger } from "@/core/utils/logger";
 import { searchDebounce } from "@/ui/utils/searchDebounce";
 
 export enum CompareTabFragment {
@@ -50,9 +48,9 @@ export class UsersTableOption {
 
 
 export class AdminFormCompareStore {
-    
+
     parentStore: AdminFormStore;
-    recommendationsState = DataState.initial<ComparisonRecommendations>();
+    metaDatState = DataState.initial<FormCompareMetaData>();
     currentFragment = CompareTabFragment.SELECT_FORM;
     compareStore?: CompareStore;
     userTableOptions: UsersTableOption = new UsersTableOption();
@@ -81,8 +79,8 @@ export class AdminFormCompareStore {
         return this.compareStore!.usersState;
     }
 
-    get recommendationRes() {
-        return this.recommendationsState.data!;
+    get metaData() {
+        return this.metaDatState.data!;
     }
 
     get formDetail() {
@@ -94,7 +92,7 @@ export class AdminFormCompareStore {
     constructor({ parentStore }: { parentStore: AdminFormStore }) {
         this.parentStore = parentStore;
         makeAutoObservable(this, {
-            recommendationsState: observable,
+            metaDatState: observable,
             currentFragment: observable,
             compareStore: observable,
         });
@@ -148,7 +146,7 @@ export class AdminFormCompareStore {
 
     async getComparisonOverview() {
         runInAction(() => this.compareStore!.overViewState = DataState.loading());
-        const req = new FormComparisonOverviewReq({ formAId: this.compareStore!.formA.id, formBId: this.compareStore!.formB!.id, formALabel: "Pre-Training", formBLabel: "Post-Traning" });
+        const req = new FormComparisonOverviewReq({ formAId: this.compareStore!.formA.id, formBId: this.compareStore!.formB!.id, formALabel: this.compareStore!.formCompareDetails.formALabel, formBLabel: this.compareStore!.formCompareDetails.formBLabel });
         try {
             const res = await withMinimumDelay(this.parentStore.adminFormsService.getComparisonOverview(req));
             const data = res.getOrThrow();
@@ -161,14 +159,14 @@ export class AdminFormCompareStore {
 
     async queryComparisonRecommendations() {
         try {
-            runInAction(() => this.recommendationsState = DataState.loading());
+            runInAction(() => this.metaDatState = DataState.loading());
             const response = await withMinimumDelay(this.parentStore.adminFormsService.queryComparisonRecommendations(this.parentStore.formDetail.id));
             const data = response.getOrThrow();
-            runInAction(() => this.recommendationsState = DataState.success(data));
+            runInAction(() => this.metaDatState = DataState.success(data));
         }
         catch (error) {
             const e = AppException.fromAny(error);
-            runInAction(() => this.recommendationsState = DataState.error({ error: e }));
+            runInAction(() => this.metaDatState = DataState.error({ error: e }));
         }
     }
 
@@ -198,14 +196,16 @@ export class AdminFormCompareStore {
         if (!this.compareStore) return;
         runInAction(() => {
             this.compareFormDetails.formBLabel = newLabel;
+            this.compareFormDetails.base.formALabel = newLabel;
             this.getComparisonOverview();
         });
     }
-    
+
     updateFormALabel(newLabel: string) {
         if (!this.compareStore) return;
         runInAction(() => {
             this.compareFormDetails.formALabel = newLabel;
+            this.compareFormDetails.base.formALabel = newLabel;
             this.getComparisonOverview();
         });
     }

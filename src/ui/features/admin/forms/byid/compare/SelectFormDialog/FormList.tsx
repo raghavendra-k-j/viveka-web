@@ -88,6 +88,9 @@ const FormItem = observer(({ form, onClick }: FormItemProps) => {
     return (
         <div className="cursor-pointer bg-surface px-4 py-3 space-x-2 flex flex-row items-center justify-between" onClick={() => onClick(form)}>
             <div className="space-y-1">
+                {form.item.assessmentType && (<div>
+                    <span className="inline-flex bg-primary-subtle text-primary font-medium px-2 py-1 rounded-sm fs-sm-p">{form.item.assessmentType.name}</span>
+                </div>)}
                 <p className="fs-md font-medium text-app-primary group-hover:!text-primary">{form.item.title}</p>
                 <div className="text-content-secondary fs-sm-p space-y-1">
                     <div>

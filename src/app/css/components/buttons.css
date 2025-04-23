@@ -87,6 +87,8 @@
 
   width: var(--btn-icon-size);
   height: var(--btn-icon-size);
+  min-width: var(--btn-icon-size);
+  min-height: var(--btn-icon-size);
   border-width: 2px;
 
   border-top-color: transparent;
