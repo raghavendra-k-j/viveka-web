@@ -27,8 +27,8 @@ class AdminFormService {
         return await this.adminFormsRepo.getAdminFormDetailByPermalink(permalink);
     }
 
-    async queryComparisonRecommendations(formId: number): Promise<ResEither<AppException, FormCompareMetaData>> {
-        return await this.adminFormsRepo.queryComparisonRecommendations(formId);
+    async queryComparisionMetaData(formId: number): Promise<ResEither<AppException, FormCompareMetaData>> {
+        return await this.adminFormsRepo.queryComparisionMetaData(formId);
     }
 
     async queryFormsToCompare(req: QueryFormsToCompareReq): Promise<ResEither<AppException, QueryFormsToCompareRes>> {

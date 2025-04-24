@@ -10,6 +10,8 @@ import { FormCompareUserListReq } from "@/domain/models/admin/forms/compare/Form
 import { FormComparisonOverview } from "@/domain/models/admin/forms/compare/FormComparisonOverview";
 import { FormCompareUserList } from "@/domain/models/admin/forms/compare/FormCompareUserList";
 import { FormCompareDetails } from "@/domain/models/admin/forms/compare/FormCompareDetails";
+import { Logger } from "@/core/utils/logger";
+import { AppException } from "@/core/exceptions/AppException";
 
 type AdminFormsRepoParams = {
     adminApiClient: AdminApiClient;
@@ -45,7 +47,7 @@ class AdminFormsRepo {
         }
     }
 
-    async queryComparisonRecommendations(formId: number): Promise<ResEither<ApiException, FormCompareMetaData>> {
+    async queryComparisionMetaData(formId: number): Promise<ResEither<ApiException, FormCompareMetaData>> {
         try {
             const response = await this.adminApiClient.getAxios().get(`/api/v1/admin/forms/${formId}/compare/metadata`);
             const data = FormCompareMetaData.fromJson(response.data);

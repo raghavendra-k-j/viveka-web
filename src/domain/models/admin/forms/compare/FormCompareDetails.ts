@@ -23,20 +23,11 @@ export class FormCompareDetails {
         this.commonResponsesCount = params.commonResponsesCount;
     }
 
-    reverse(): FormCompareDetails {
-        return new FormCompareDetails({
-            formA: this.formB,
-            formB: this.formA,
-            formALabel: this.formBLabel,
-            formBLabel: this.formALabel,
-            commonResponsesCount: this.commonResponsesCount,
-        });
-    }
-
     static fromJson(json: JSONParams): FormCompareDetails {
+        const now = new Date();
         return new FormCompareDetails({
-            formA: FormCompareDetail.fromJson(json.formA),
-            formB: FormCompareDetail.fromJson(json.formB),
+            formA: FormCompareDetail.fromJson({json: json.formA, now: now}),
+            formB: FormCompareDetail.fromJson({json: json.formB, now: now}),
             formALabel: json.formALabel,
             formBLabel: json.formBLabel,
             commonResponsesCount: json.commonResponsesCount,

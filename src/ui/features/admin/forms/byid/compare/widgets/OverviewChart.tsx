@@ -129,20 +129,23 @@ const AverageTimeTakenChart = (props: { data: ChartDataType[] }) => (
     />
 );
 
-const PassRateChart = (props: { data: ChartDataType[] }) => (
-    <ReusableBarChart
-        data={props.data}
-        title="Pass Rate"
-        dataKey="passRate"
-        yTickFormatter={(value) => `${NumberDisplayUtil.formatDecimal({ number: value, roundTo: 2 })}%`}
-        tooltipFormatter={(value, label) => {
-            const { passRate, passCount, totalUser } = value;
-            return `${NumberDisplayUtil.formatDecimal({ number: passRate, roundTo: 2 })}% (${passCount}/${totalUser} Users)`;
-        }}
-        barColor="#fe9a00"
-        yLabel="Pass Rate (%)"
-    />
-);
+const PassRateChart = (props: { data: ChartDataType[] }) => {
+    const store = useAdminFormCompareStore();
+    const { compareFormDetails } = store;
+    return (
+        <ReusableBarChart
+            data={props.data}
+            title="Pass Rate"
+            dataKey="passRate"
+            yTickFormatter={(value) => `${NumberDisplayUtil.formatDecimal({ number: value, roundTo: 2 })}%`}
+            tooltipFormatter={(value, label) => {
+                const { passRate, passCount } = value;
+                return `${NumberDisplayUtil.formatDecimal({ number: passRate, roundTo: 2 })}% (${passCount}/${compareFormDetails.base.commonResponsesCount} Users)`;
+            }}
+            barColor="#fe9a00"
+            yLabel="Pass Rate (%)" />
+    );
+};
 
 type CompareOverviewChartsProps = {
     overview: FormComparisonOverview;

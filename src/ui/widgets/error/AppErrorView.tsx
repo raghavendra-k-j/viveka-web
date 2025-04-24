@@ -1,3 +1,4 @@
+import { AppException } from "@/core/exceptions/AppException";
 import clsx from "clsx";
 import React, { JSX } from "react";
 
@@ -7,6 +8,7 @@ type AppErrorViewProps = {
     actions: React.ReactNode[];
     className?: string;
     component?: keyof JSX.IntrinsicElements;
+    e?: AppException;
 };
 
 export default function AppErrorView({
@@ -15,6 +17,7 @@ export default function AppErrorView({
     actions,
     className,
     component: Component = "div",
+    e,
 }: AppErrorViewProps) {
     return (
         <Component className={clsx("flex flex-col justify-center text-center", className)}>
@@ -27,6 +30,7 @@ export default function AppErrorView({
                     ))}
                 </div>
             )}
+            {e && (<div>{e.cause as any}</div>)}
         </Component>
     );
 }

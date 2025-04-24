@@ -107,11 +107,7 @@ export class AdminFormCompareStore {
     }
 
 
-    reverseComparision() {
-        // make a shallow copy of the FormCompareDetailsVm
-        const formCompareDetails = this.compareFormDetails.reverse();
-        this.onFormSelected(formCompareDetails);
-    }
+    
 
     onFormSelected(form?: FormCompareDetailsVm) {
         if (!form) {
@@ -170,7 +166,7 @@ export class AdminFormCompareStore {
     async queryMetaData() {
         try {
             runInAction(() => this.metaDatState = DataState.loading());
-            const response = await withMinimumDelay(this.parentStore.adminFormsService.queryComparisonRecommendations(this.parentStore.formDetail.id));
+            const response = await withMinimumDelay(this.parentStore.adminFormsService.queryComparisionMetaData(this.parentStore.formDetail.id));
             const data = response.getOrThrow();
             runInAction(() => this.metaDatState = DataState.success(data));
         }

@@ -19,9 +19,10 @@ class QueryFormsToCompareRes {
     }
 
     static fromJson(json: JSONParams): QueryFormsToCompareRes {
+        const now = new Date();
         return new QueryFormsToCompareRes({
             items: json.items.map((item: JSONParams) => {
-                return FormCompareItem.fromJson(item);
+                return FormCompareItem.fromJson({ json: item, now: now });
             }),
             pageInfo: PageInfo.fromJson(json.pageInfo)
         });

@@ -51,7 +51,8 @@ export default function SelectFormTab() {
                                     onClick={async () => {
                                         try {
                                             let response = (await store.getFormCompareDetails({ formBId: recommendedForm.id })).getOrThrow();
-                                            store.onFormSelected(new FormCompareDetailsVm(response));
+                                            let vm = new FormCompareDetailsVm(response);
+                                            store.onFormSelected(vm);
                                         }
                                         catch (e) {
                                             let appException = e as AppException;

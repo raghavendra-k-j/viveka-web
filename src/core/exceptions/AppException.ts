@@ -7,7 +7,7 @@ export type AppExceptionParams = {
 };
 
 export class AppException extends Error {
-    
+
     description: string | null;
     data: any | null;
 
@@ -44,7 +44,7 @@ export class AppException extends Error {
         const defaultDescription = description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
         return new AppException({ message: "Intentional error", description: defaultDescription });
     }
-    
+
 
     toString(): string {
         return `AppException: ${this.message}${this.hasDesc() ? ` - ${this.description}` : ""}`;

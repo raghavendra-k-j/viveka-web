@@ -30,8 +30,7 @@ export class FormCompareDetailsVm {
     isSameTotalMarks : boolean;
 
     reverse(): FormCompareDetailsVm {
-        let newBase = this.base.reverse();
-        return new FormCompareDetailsVm(newBase);
+        return new FormCompareDetailsVm(this.base);
     }
 
     get formA(): FormCompareDetail {

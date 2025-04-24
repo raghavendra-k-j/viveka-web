@@ -10,6 +10,7 @@ import { DateDisplayUtil } from "@/ui/utils/DateDisplayUtil";
 import { FormCompareItemVm } from "../Models";
 import { Pagination } from "@/app/theme/Pagination";
 import { SelectFormDialogStore } from "./store";
+import clsx from "clsx";
 
 
 
@@ -84,29 +85,60 @@ type FormItemProps = {
     onClick: (form: FormCompareItemVm) => void;
 };
 
+// Map of status to badge styles
+const statusBadgeClasses: Record<string, string> = {
+    Draft: "bg-yellow-100 text-yellow-800",
+    Published: "bg-blue-100 text-blue-800",
+    Active: "bg-green-100 text-green-800",
+    Closed: "bg-red-100 text-red-800",
+    Archived: "bg-gray-100 text-gray-500"
+};
+
 const FormItem = observer(({ form, onClick }: FormItemProps) => {
+    const status = form.item.adminFormStatus;
+
     return (
-        <div className="cursor-pointer bg-surface px-4 py-3 space-x-2 flex flex-row items-center justify-between" onClick={() => onClick(form)}>
+        <div
+            className="cursor-pointer bg-surface px-4 py-3 space-x-2 flex flex-row items-center justify-between group"
+            onClick={() => onClick(form)}
+        >
             <div className="space-y-1">
-                {form.item.assessmentType && (<div>
-                    <span className="inline-flex bg-primary-subtle text-primary font-medium px-2 py-1 rounded-sm fs-sm-p">{form.item.assessmentType.name}</span>
-                </div>)}
-                <p className="fs-md font-medium text-app-primary group-hover:!text-primary">{form.item.title}</p>
+
+
+                <div className="space-x-2">
+                    <span className={`inline-block rounded-sm px-2 py-1 text-xs font-medium ${statusBadgeClasses[status.name]}`}>
+                        {status.name}
+                    </span>
+                    {form.item.assessmentType && (
+                        <span className="inline-flex bg-primary-subtle text-primary font-medium px-2 py-1 rounded-sm fs-sm-p">
+                            {form.item.assessmentType.name}
+                        </span>
+                    )}
+                </div>
+
+                <p className={clsx("fs-md font-medium text-app-primary group-hover:!text-primary", { "text-content-disabled": form.item.adminFormStatus.isDraft })}>
+                    {form.item.title}
+                </p>
+
                 <div className="text-content-secondary fs-sm-p space-y-1">
                     <div>
-                        {form.item.totalQuestions} Questions • {NumberDisplayUtil.formatDecimal({ number: form.item.totalMarks, roundTo: 2 })} Marks • {form.item.totalResponses} Responses
+                        {form.item.totalQuestions} Questions •{" "}
+                        {NumberDisplayUtil.formatDecimal({ number: form.item.totalMarks, roundTo: 2 })} Marks •{" "}
+                        {form.item.totalResponses} Responses
                     </div>
                     <div>
-                        Start Date: {DateDisplayUtil.dateTime(form.item.startDate)}
+                        Start Date: {form.item.startDate ? DateDisplayUtil.dateTime(form.item.startDate) : "N/A"}
                     </div>
                     <div>
-                        End Date: {DateDisplayUtil.dateTime(form.item.endDate)}
+                        End Date: {form.item.endDate ? DateDisplayUtil.dateTime(form.item.endDate) : "N/A"}
                     </div>
                 </div>
             </div>
+
             <OutlinedButton
                 size="xs"
                 onClick={() => onClick(form)}
+                disabled={form.item.adminFormStatus.isDraft}
                 loading={form.detailState.isLoading}
             >
                 Select

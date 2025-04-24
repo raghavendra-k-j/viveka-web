@@ -30,6 +30,7 @@ function AdminFormComparePage() {
                 <AppErrorView
                     message={e.message}
                     description={e.description}
+                    e={e}
                     actions={[
                         <FilledButton key="retry" onClick={() => store.queryMetaData()}>
                             Retry
