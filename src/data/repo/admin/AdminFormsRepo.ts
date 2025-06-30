@@ -26,11 +26,13 @@ class AdminFormsRepo {
 
     async getAdminFormDetailByPermalink(permalink: string): Promise<ResEither<ApiException, AdminFormDetail>> {
         try {
+            
             const response = await this.adminApiClient.getAxios().get(`/api/v1/admin/forms/${permalink}`);
             const data = AdminFormDetail.fromJson(response.data);
             return ResEither.success(data);
         }
         catch (e) {
+            console.error("Error fetching form detail by permalink:", e);
             const error = ApiException.fromApiError(e);
             return ResEither.failure(error);
         }

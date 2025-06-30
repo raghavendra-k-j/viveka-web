@@ -28,13 +28,16 @@ export class AdminFormStore {
 
 
     async loadFormDetail() {
+        console.log("Loading form detail for permalink:", this.permalink);
         try {
             runInAction(() => this.formState = DataState.loading());
             const response = await withMinimumDelay(this.adminFormsService.getAdminFormDetailByPermalink(this.permalink));
             const data = response.getOrThrow();
             runInAction(() => this.formState = DataState.success(data));
+            console.log("Form detail loaded successfully:", data);
         }
         catch (error) {
+            console.error("Error loading form detail:", error);
             const e = AppException.fromAny(error);
             runInAction(() => this.formState = DataState.error({ error: e }));
         }
